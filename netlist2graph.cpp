@@ -167,7 +167,7 @@ map<string, Gate *> read_file(string file, string *module_name, map<string, int>
             string tmp = outp.first + "[" + to_string(i) + "]";
             Gate *newGate = new Gate;
             newGate->gate_name = tmp;
-            primary_inputs[tmp] = newGate;
+            primary_outputs[tmp] = newGate;
         }
     }
 
@@ -263,5 +263,5 @@ int main()
     //     cout << curr->gate_name << endl;
     //     curr = curr->outputs[0];
     // }
-    // return 0;
+    return 0;
 }
