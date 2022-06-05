@@ -85,7 +85,7 @@ map<string, Gate*> read_file(string file, string* module_name, map<string, int>*
                 }
                 else {
                     high_bit = "0";
-                    port_start_id = str.find("input") + 6;
+                    port_start_id = str.find("output") + 6;
                 }
                 int output_bits = stoi(high_bit) + 1;
                 string ports_string = str.substr(port_start_id, string:: npos);
@@ -129,20 +129,37 @@ map<string, Gate*> read_file(string file, string* module_name, map<string, int>*
     // initialize primary inputs and outputs
     for (auto inp: (*module_inputs)){
         int inp_bits = inp.second;
-        for (int i = 0; i < inp_bits; i++){
-            string tmp = inp.first + "[" + to_string(i) + "]";
+        if (inp_bits == 1){
+            string tmp = inp.first;
             Gate* newGate = new Gate;
             newGate->gate_name = tmp;
             primary_inputs[tmp] = newGate;
         }
+        else{
+            for (int i = 0; i < inp_bits; i++){
+                string tmp = inp.first + "[" + to_string(i) + "]";
+                Gate* newGate = new Gate;
+                newGate->gate_name = tmp;
+                primary_inputs[tmp] = newGate;
+            }
+        }
     }
     for (auto outp: (*module_outputs)){
         int outp_bits = outp.second;
-        for (int i = 0; i < outp_bits; i++){
-            string tmp = outp.first + "[" + to_string(i) + "]";
+        // cout << outp.first << endl;
+        if (outp_bits == 1){
+            string tmp = outp.first;
             Gate* newGate = new Gate;
             newGate->gate_name = tmp;
             primary_outputs[tmp] = newGate;
+        }
+        else{
+            for (int i = 0; i < outp_bits; i++){
+                string tmp = outp.first + "[" + to_string(i) + "]";
+                Gate* newGate = new Gate;
+                newGate->gate_name = tmp;
+                primary_outputs[tmp] = newGate;
+            }
         }
     }
 
@@ -166,7 +183,7 @@ map<string, Gate*> read_file(string file, string* module_name, map<string, int>*
                 departed_gate->outputs.push_back(arrived_gate);
             }
             else {
-                cout << "Something Went Wrong" << endl;
+                cout << "Something Went Wrong: no " <<  wire_name << " found" << endl;
             }
         }
     }
@@ -189,7 +206,7 @@ map<string, Gate*> read_file(string file, string* module_name, map<string, int>*
                 departed_gate->outputs.push_back(arrived_gate);
             }
             else {
-                cout << "Something Went Wrong" << endl;
+                cout << "Something Went Wrong: no " <<  wire_name << " found" << endl;
             }
         }
     }
@@ -201,7 +218,7 @@ int main(){
     // cout << root->num_of_inputs();
 
     // ======== input ========================
-    string file_path = "top_primitive.v";
+    string file_path = "full_adder.v";
     // ======== basic netlist info ===========
     string module_name;
     map<string, int> module_inputs;
