@@ -2,7 +2,7 @@ module top(a, b, ci, s, co);
     input a,b,ci;
     output s,co;
     wire a,b,ci,s,co;
-    wire i1,i2,i3;
+    wire i1,i2,i3,i4;
     xnor xnor1(i1, a, b);
     and and1(i2, a, b);
     xnor xnor2(i3, i1, ci);

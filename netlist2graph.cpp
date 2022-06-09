@@ -1,6 +1,7 @@
-#include <bits/stdc++.h>
-#include "graph.h"
-#include <array>
+// #include <bits/stdc++.h>
+// #include "graph.h"
+// #include <array>
+#include "netlist2graph.h"
 
 using namespace std;
 
@@ -41,7 +42,7 @@ tuple<int, vector<string>> split_ports(string str)
     return make_tuple(num_of_bits, ports);
 }
 
-map<string, Gate *> read_file(string file, string *module_name, map<string, int> *module_inputs, map<string, int> *module_outputs)
+tuple<map<string, Gate *>, map<string, Gate *>> read_file(string file, string *module_name, map<string, int> *module_inputs, map<string, int> *module_outputs)
 {
     string str;
     ifstream ifs(file, ifstream::in);
@@ -241,40 +242,40 @@ map<string, Gate *> read_file(string file, string *module_name, map<string, int>
             }
         }
     }
-    return primary_inputs;
+    return make_tuple(primary_inputs, primary_outputs);
 }
 
-int main()
-{
-    // Gate *root = new Gate("dao");
-    // cout << root->num_of_inputs();
+// int main()
+// {
+//     // Gate *root = new Gate("dao");
+//     // cout << root->num_of_inputs();
 
-    // ======== input ========================
-    string file_path = "full_adder.v";
-    // ======== basic netlist info ===========
-    string module_name;
-    map<string, int> module_inputs;
-    map<string, int> module_outputs;
+//     // ======== input ========================
+//     string file_path = "full_adder.v";
+//     // ======== basic netlist info ===========
+//     string module_name;
+//     map<string, int> module_inputs;
+//     map<string, int> module_outputs;
 
-    map<string, Gate *> primary_inputs = read_file(file_path, &module_name, &module_inputs, &module_outputs);
-    // for (auto dao : module_inputs)
-    // {
-    //     cout << dao.first << " " << dao.second << endl;
-    // }
-    cout << primary_inputs.find("a")->second->outputs[0]->gate_name << endl;
+//     map<string, Gate *> primary_inputs = read_file(file_path, &module_name, &module_inputs, &module_outputs);
+//     // for (auto dao : module_inputs)
+//     // {
+//     //     cout << dao.first << " " << dao.second << endl;
+//     // }
+//     cout << primary_inputs.find("a")->second->outputs[0]->gate_name << endl;
 
-    // debug
-    // for (auto dao: module_inputs){
-    //     cout << dao.first << " " << dao.second << endl;
-    // }
-    // for (auto dao: module_outputs){
-    //     cout << dao.first << " " << dao.second << endl;
-    // }
+//     // debug
+//     // for (auto dao: module_inputs){
+//     //     cout << dao.first << " " << dao.second << endl;
+//     // }
+//     // for (auto dao: module_outputs){
+//     //     cout << dao.first << " " << dao.second << endl;
+//     // }
 
-    // auto curr = primary_inputs.find("in1[2]")->second;
-    // while (1){
-    //     cout << curr->gate_name << endl;
-    //     curr = curr->outputs[0];
-    // }
-    return 0;
-}
+//     // auto curr = primary_inputs.find("in1[2]")->second;
+//     // while (1){
+//     //     cout << curr->gate_name << endl;
+//     //     curr = curr->outputs[0];
+//     // }
+//     return 0;
+// }
