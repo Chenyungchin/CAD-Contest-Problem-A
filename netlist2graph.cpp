@@ -198,8 +198,9 @@ tuple<map<string, Gate *>, map<string, Gate *>> read_file(string file, string *m
         if (tmp != output_map.end())
         {
             Gate *departed_gate = tmp->second;
-            arrived_gate->inputs.push_back(departed_gate);
-            departed_gate->outputs.push_back(arrived_gate);
+            arrived_gate->inputs.push_back(make_tuple(departed_gate, 0));
+            vector<tuple<Gate*, int>> output_connects {make_tuple(arrived_gate, 0)};
+            departed_gate->outputs.push_back(output_connects);
         }
         else
         { // find in primary inputs
@@ -207,8 +208,9 @@ tuple<map<string, Gate *>, map<string, Gate *>> read_file(string file, string *m
             if (tmp2 != primary_inputs.end())
             {
                 Gate *departed_gate = tmp2->second;
-                arrived_gate->inputs.push_back(departed_gate);
-                departed_gate->outputs.push_back(arrived_gate);
+                arrived_gate->inputs.push_back(make_tuple(departed_gate, 0));
+                vector<tuple<Gate*, int>> output_connects {make_tuple(arrived_gate, 0)};
+                departed_gate->outputs.push_back(output_connects);
             }
             else {
                 cout << "Something Went Wrong: no " <<  wire_name << " found" << endl;
@@ -225,8 +227,9 @@ tuple<map<string, Gate *>, map<string, Gate *>> read_file(string file, string *m
         if (tmp != output_map.end())
         {
             Gate *departed_gate = tmp->second;
-            arrived_gate->inputs.push_back(departed_gate);
-            departed_gate->outputs.push_back(arrived_gate);
+            arrived_gate->inputs.push_back(make_tuple(departed_gate, 0));
+            vector<tuple<Gate*, int>> output_connects {make_tuple(arrived_gate, 0)};
+            departed_gate->outputs.push_back(output_connects);
         }
         else
         { // find in primary inputs
@@ -234,8 +237,9 @@ tuple<map<string, Gate *>, map<string, Gate *>> read_file(string file, string *m
             if (tmp2 != primary_inputs.end())
             {
                 Gate *departed_gate = tmp2->second;
-                arrived_gate->inputs.push_back(departed_gate);
-                departed_gate->outputs.push_back(arrived_gate);
+                arrived_gate->inputs.push_back(make_tuple(departed_gate, 0));
+                vector<tuple<Gate*, int>> output_connects {make_tuple(arrived_gate, 0)};
+                departed_gate->outputs.push_back(output_connects);
             }
             else {
                 cout << "Something Went Wrong: no " <<  wire_name << " found" << endl;

@@ -6,8 +6,8 @@ using namespace std;
 
 class Gate{
 public:
-    vector<Gate*> inputs;
-    vector<Gate*> outputs;
+    vector<tuple<Gate*, int>> inputs;
+    vector<vector<tuple<Gate*, int>>> outputs;
     string gate_name;
     int no; 
     int traversal;
