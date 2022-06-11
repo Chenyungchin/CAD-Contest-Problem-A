@@ -199,8 +199,17 @@ tuple<map<string, Gate *>, map<string, Gate *>> read_file(string file, string *m
         {
             Gate *departed_gate = tmp->second;
             arrived_gate->inputs.push_back(make_tuple(departed_gate, 0));
-            vector<tuple<Gate*, int>> output_connects {make_tuple(arrived_gate, 0)};
-            departed_gate->outputs.push_back(output_connects);
+            // vector<tuple<Gate*, int>> output_connects {make_tuple(arrived_gate, 0)};
+            // departed_gate->outputs.push_back(output_connects);
+            if (departed_gate->num_of_outputs() == 0) 
+            {
+                vector<tuple<Gate*, int>> output_connects {make_tuple(arrived_gate, 0)};
+                departed_gate->outputs.push_back(output_connects);
+            }
+            else
+            {
+                departed_gate->outputs[0].push_back(make_tuple(arrived_gate, 0));
+            }
         }
         else
         { // find in primary inputs
@@ -209,8 +218,16 @@ tuple<map<string, Gate *>, map<string, Gate *>> read_file(string file, string *m
             {
                 Gate *departed_gate = tmp2->second;
                 arrived_gate->inputs.push_back(make_tuple(departed_gate, 0));
-                vector<tuple<Gate*, int>> output_connects {make_tuple(arrived_gate, 0)};
-                departed_gate->outputs.push_back(output_connects);
+                if (departed_gate->num_of_outputs() == 0) 
+                {
+                    vector<tuple<Gate*, int>> output_connects {make_tuple(arrived_gate, 0)};
+                    departed_gate->outputs.push_back(output_connects);
+                }
+                else
+                {
+                    departed_gate->outputs[0].push_back(make_tuple(arrived_gate, 0));
+                }
+                
             }
             else {
                 cout << "Something Went Wrong: no " <<  wire_name << " found" << endl;
@@ -228,8 +245,17 @@ tuple<map<string, Gate *>, map<string, Gate *>> read_file(string file, string *m
         {
             Gate *departed_gate = tmp->second;
             arrived_gate->inputs.push_back(make_tuple(departed_gate, 0));
-            vector<tuple<Gate*, int>> output_connects {make_tuple(arrived_gate, 0)};
-            departed_gate->outputs.push_back(output_connects);
+            // vector<tuple<Gate*, int>> output_connects {make_tuple(arrived_gate, 0)};
+            // departed_gate->outputs.push_back(output_connects);
+            if (departed_gate->num_of_outputs() == 0) 
+            {
+                vector<tuple<Gate*, int>> output_connects {make_tuple(arrived_gate, 0)};
+                departed_gate->outputs.push_back(output_connects);
+            }
+            else
+            {
+                departed_gate->outputs[0].push_back(make_tuple(arrived_gate, 0));
+            }
         }
         else
         { // find in primary inputs
@@ -238,8 +264,17 @@ tuple<map<string, Gate *>, map<string, Gate *>> read_file(string file, string *m
             {
                 Gate *departed_gate = tmp2->second;
                 arrived_gate->inputs.push_back(make_tuple(departed_gate, 0));
-                vector<tuple<Gate*, int>> output_connects {make_tuple(arrived_gate, 0)};
-                departed_gate->outputs.push_back(output_connects);
+                // vector<tuple<Gate*, int>> output_connects {make_tuple(arrived_gate, 0)};
+                // departed_gate->outputs.push_back(output_connects);
+                if (departed_gate->num_of_outputs() == 0) 
+                {
+                    vector<tuple<Gate*, int>> output_connects {make_tuple(arrived_gate, 0)};
+                    departed_gate->outputs.push_back(output_connects);
+                }
+                else
+                {
+                    departed_gate->outputs[0].push_back(make_tuple(arrived_gate, 0));
+                }
             }
             else {
                 cout << "Something Went Wrong: no " <<  wire_name << " found" << endl;
