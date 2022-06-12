@@ -6,8 +6,8 @@
 
 
 int main() {
-    // string file_path = "full_adder.v";
-    string file_path = "top_primitive.v";
+    string file_path = "full_adder.v";
+    // string file_path = "top_primitive.v";
     string file_out_path = "out.v";
     string module_name;
     map<string, int> module_inputs;
