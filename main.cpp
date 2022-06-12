@@ -4,6 +4,7 @@
 #include "netlist2graph.h"
 #include "graph2rtl.h"
 #include "deleteBuf.h"
+#include "Compare_pattern.h"
 
 
 int main() {
@@ -47,6 +48,18 @@ int main() {
 
 
     deleteBuf(primary_inputs, primary_outputs);
+
+    vector<int> pattern = {1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0};
+    vector<Gate*> inputs, outputs;
+    for (auto inp: primary_inputs){
+        inputs.push_back(inp.second);
+    }
+    for (auto oup: primary_outputs){
+        outputs.push_back(oup.second);
+    }
+    vector<int> inputs_operand_bit = {4, 4, 4};
+    bool dao = compare_pattern(pattern, inputs, outputs, inputs_operand_bit);
+    cout << (dao ? "It is the same!" : "It is different!") << endl;
 
     bool write_complete = write_file(file_out_path, module_name, module_inputs, module_outputs, primary_inputs);
 
