@@ -52,6 +52,8 @@ tuple<map<string, Gate *>, map<string, Gate *>> read_file(string file, string *m
     vector<pair<string, Gate *>> output_map; // wire name, gate that produces the output
     vector<pair<string, Gate *>> input_map;  // wire name, gate that accepts the input
 
+    int gate_number = 0;
+
     while (getline(ifs, str))
     {
         stringstream ss(str);
@@ -134,6 +136,8 @@ tuple<map<string, Gate *>, map<string, Gate *>> read_file(string file, string *m
                     gate_ports.push_back(port);
                 }
                 Gate *newGate = new Gate(gate_name);
+                newGate->no = gate_number;
+                gate_number ++;
                 // output_map[gate_ports[0]] = newGate;
                 output_map.push_back(make_pair(gate_ports[0], newGate));
                 for (int i = 1; i < gate_ports.size(); i++)
