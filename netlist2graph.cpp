@@ -50,7 +50,7 @@ tuple<map<string, Gate *>, map<string, Gate *>> read_file(string file, string *m
     // initial settings
     string std_library[] = {"and", "or", "nand", "nor", "not", "buf", "xor", "xnor"};
     vector<pair<string, Gate *>> output_map; // wire name, gate that produces the output
-    vector<pair<string, Gate *>> input_map;  // wire name, gate that accepts the input
+    vector<tuple<string, Gate *, int>> input_map;  // wire name, gate that accepts the input, input index
 
     int gate_number = 0;
 
@@ -143,7 +143,7 @@ tuple<map<string, Gate *>, map<string, Gate *>> read_file(string file, string *m
                 for (int i = 1; i < gate_ports.size(); i++)
                 {
                     // input_map[gate_ports[i]] = newGate;
-                    input_map.push_back(make_pair(gate_ports[i], newGate));
+                    input_map.push_back(make_tuple(gate_ports[i], newGate, i-1));
                 }
             }
         }
@@ -195,8 +195,10 @@ tuple<map<string, Gate *>, map<string, Gate *>> read_file(string file, string *m
     // connect input map
     for (auto wire_map : input_map)
     {
-        string wire_name = wire_map.first;
-        Gate *arrived_gate = wire_map.second;
+        string wire_name = get<0>(wire_map);
+        Gate *arrived_gate = get<1>(wire_map);
+        int input_id = get<2>(wire_map);
+
         // find in output map
         auto tmp = find_if(output_map.begin(), output_map.end(), [&wire_name](auto x) { return x.first == wire_name; });
         if (tmp != output_map.end())
@@ -207,12 +209,12 @@ tuple<map<string, Gate *>, map<string, Gate *>> read_file(string file, string *m
             // departed_gate->outputs.push_back(output_connects);
             if (departed_gate->num_of_outputs() == 0) 
             {
-                vector<tuple<Gate*, int>> output_connects {make_tuple(arrived_gate, 0)};
+                vector<tuple<Gate*, int>> output_connects {make_tuple(arrived_gate, input_id)};
                 departed_gate->outputs.push_back(output_connects);
             }
             else
             {
-                departed_gate->outputs[0].push_back(make_tuple(arrived_gate, 0));
+                departed_gate->outputs[0].push_back(make_tuple(arrived_gate, input_id));
             }
         }
         else
@@ -224,12 +226,12 @@ tuple<map<string, Gate *>, map<string, Gate *>> read_file(string file, string *m
                 arrived_gate->inputs.push_back(make_tuple(departed_gate, 0));
                 if (departed_gate->num_of_outputs() == 0) 
                 {
-                    vector<tuple<Gate*, int>> output_connects {make_tuple(arrived_gate, 0)};
+                    vector<tuple<Gate*, int>> output_connects {make_tuple(arrived_gate, input_id)};
                     departed_gate->outputs.push_back(output_connects);
                 }
                 else
                 {
-                    departed_gate->outputs[0].push_back(make_tuple(arrived_gate, 0));
+                    departed_gate->outputs[0].push_back(make_tuple(arrived_gate, input_id));
                 }
                 
             }
