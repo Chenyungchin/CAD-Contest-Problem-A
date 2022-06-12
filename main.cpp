@@ -28,9 +28,10 @@ int main() {
         cout << input.second->num_of_inputs() << " " <<  input.second->num_of_outputs() << endl;
         for (auto dao: input.second->outputs){ // iterate every output gate
             out_num ++;
-            cout << out_num << endl;
+            cout << "out_num: " << out_num << endl;
             for (auto daodao: dao){// iterate every fanout of the gate
                 cout << "gate fanout: " << get<0>(daodao)->gate_name << " " << get<1>(daodao) << endl;
+                cout << "gate index: " << get<0>(daodao)->no << endl;
             } 
         }
         out_num = 0;
