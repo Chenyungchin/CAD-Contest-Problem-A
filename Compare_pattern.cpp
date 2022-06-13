@@ -45,16 +45,19 @@ bool compare_pattern(vector<int> pattern, vector<Gate*> inputs, vector<Gate*> ou
         start_index += bits;
     }
     
-    int output_calc = 0;
+    int output_adder_tree = 0;
+    int output_mult = 1;
     for (auto word: words){
-        output_calc += word;
+        output_adder_tree += word;
+        output_mult *= word;
     }
 
-    cout << "calculated: " << output_calc << endl;
+    cout << "calculated: " << output_adder_tree << endl;
     int mod_num = pow(2, (outputs.size()));
 
     // check equivalence
-    return (output_dec == (output_calc % mod_num));
+    return (output_dec == (output_adder_tree % mod_num));
+    // return (output_dec == (output_mult % mod_num));
 }
 
 int get_gate_value(Gate* gate){

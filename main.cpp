@@ -4,6 +4,7 @@
 #include "netlist2graph.h"
 #include "graph2rtl.h"
 #include "Compare_pattern.h"
+#include "Pattern_controller.h"
 
 
 int main() {
@@ -54,6 +55,7 @@ int main() {
     }
     vector<int> inputs_operand_bit = {4, 4, 4};
     bool dao = compare_pattern(pattern, inputs, outputs, inputs_operand_bit);
+    // bool dao = pattern_controller(inputs, outputs, inputs_operand_bit);
     cout << (dao ? "It is the same!" : "It is different!") << endl;
 
     bool write_complete = write_file(file_out_path, module_name, module_inputs, module_outputs, primary_inputs);
