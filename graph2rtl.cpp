@@ -18,8 +18,8 @@ bool write_file(string file, string module_name, map<string, int> module_inputs,
                                             make_pair("nand", "~&"), 
                                             make_pair("nor", "~|"), 
                                             make_pair("xor", "^"), 
-                                            make_pair("xnor", "~^")};
-
+                                            make_pair("xnor", "~^"), 
+                                            make_pair("buf", "fuck")};
     vector<string> input_list;
     vector<string> output_list;
     int input_num = 0;
@@ -62,8 +62,8 @@ bool write_file(string file, string module_name, map<string, int> module_inputs,
         // gate_count ++;
         for (int i=0; i<input.second->num_of_outputs(); i++) {
             for (int j=0; j<input.second->outputs[i].size(); j++) {
-                if (get<0>(input.second->outputs[i][j])->no < 0) {
-                    get<0>(input.second->outputs[i][j])->no = gate_count;
+                if (get<0>(input.second->outputs[i][j])->traversal == 0) {
+                    // get<0>(input.second->outputs[i][j])->no = gate_count;
                     gate_count ++;
                 }
                 get<0>(input.second->outputs[i][j])->traversal ++;
@@ -79,9 +79,17 @@ bool write_file(string file, string module_name, map<string, int> module_inputs,
     while (!gate_queue.empty()) {
         Gate* g = gate_queue.front();
         gate_queue.pop();
+
+        // cout << wire_count << endl;
+        // cout << g->gate_name;
+        // for (int i=0; i<g->num_of_inputs(); i++) {
+        //     cout << get<1>(g->inputs[i]);
+        // }
+        // cout << "\n";
+
         // f << g->num_of_inputs() << " " << g->num_of_outputs() << " ";
-        if (g->no < 0) {
-            g->no = gate_count;
+        if (g->traversal == 0) {
+            // g->no = gate_count;
             gate_count ++;
         }
         // f << g->gate_name << " g" << g->no << "(";

@@ -3,13 +3,15 @@
 #include "graph.h"
 #include "netlist2graph.h"
 #include "graph2rtl.h"
+#include "deleteBuf.h"
 #include "Compare_pattern.h"
 #include "Pattern_controller.h"
 
 
 int main() {
     // string file_path = "full_adder.v";
-    string file_path = "top_primitive.v";
+    // string file_path = "top_primitive.v";
+    string file_path = "20.v";
     string file_out_path = "out.v";
     string module_name;
     map<string, int> module_inputs;
@@ -17,7 +19,7 @@ int main() {
     tuple<map<string, Gate *>, map<string, Gate *>> primary = read_file(file_path, &module_name, &module_inputs, &module_outputs);
     map<string, Gate *> primary_inputs = get<0>(primary);
     map<string, Gate *> primary_outputs = get<1>(primary);
-    // cout << module_name << endl;
+    cout << module_name << endl;
     // for (auto input : module_inputs) {
     //     cout << input.first << " " << input.second << endl;
     // }
@@ -44,6 +46,9 @@ int main() {
     //     cout << output.first << " " << output.second->gate_name << " ";
     //     cout << output.second->num_of_inputs() << " " <<  output.second->num_of_outputs() << endl;
     // }
+
+
+    deleteBuf(primary_inputs, primary_outputs);
 
     vector<int> pattern = {1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0};
     vector<Gate*> inputs, outputs;
