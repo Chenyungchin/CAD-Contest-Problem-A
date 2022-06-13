@@ -4,6 +4,7 @@
 #include "netlist2graph.h"
 #include "graph2rtl.h"
 #include "deleteBuf.h"
+#include "deleteNot.h"
 #include "Compare_pattern.h"
 
 
@@ -11,7 +12,7 @@ int main() {
     // string file_path = "full_adder.v";
     // string file_path = "top_primitive.v";
     string file_path = "20.v";
-    string file_out_path = "out.v";
+    string file_out_path = "out2.v";
     string module_name;
     map<string, int> module_inputs;
     map<string, int> module_outputs;
@@ -48,6 +49,7 @@ int main() {
 
 
     deleteBuf(primary_inputs, primary_outputs);
+    deleteNot(primary_inputs, primary_outputs);
 
     vector<int> pattern = {1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0};
     vector<Gate*> inputs, outputs;

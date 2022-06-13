@@ -97,7 +97,9 @@ bool write_file(string file, string module_name, map<string, int> module_inputs,
         vector<pair<string, string>>::iterator op_pair = find_if(Gate_pair.begin(), Gate_pair.end(), [&name](pair<string, string> p){return p.first == name;});
         string op = (*op_pair).second;
 
+        
         f << "assign " ;
+        // TODO: a gate with many outputs
         for (auto output : g->outputs) {
             bool in_output_list = false; // Check if there's a fanout is primary output
             int primary_output_fanout_idx;

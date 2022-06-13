@@ -58,10 +58,10 @@ bool compare_pattern(vector<int> pattern, vector<Gate*> inputs, vector<Gate*> ou
 }
 
 int get_gate_value(Gate* gate){
-    cout << "debug  " << gate->gate_name << " " << gate->value << endl;
+    // cout << "debug  " << gate->gate_name << " " << gate->value << endl;
     if (gate->value != -1) return gate->value;
     string oper = gate->gate_name;
-    cout << oper << endl;
+    // cout << oper << endl;
     if (oper == "and"){
         int val1 = get_gate_value(get<0>(gate->inputs[0]));
         int val2 = get_gate_value(get<0>(gate->inputs[1]));

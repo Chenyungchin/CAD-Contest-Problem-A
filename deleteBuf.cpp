@@ -26,6 +26,7 @@ void deleteBuf(map<string, Gate *> primary_inputs, map<string, Gate *> primary_o
     while (!gate_queue.empty()) {
         Gate* g = gate_queue.front();
         gate_queue.pop();
+
         for (auto output : g->outputs) {
             for (int i=0; i<output.size(); i++) {
                 // if (find(output_list.begin(), output_list.end(), get<0>(output[i])->gate_name) != output_list.end()) {
