@@ -31,11 +31,11 @@ void deleteNot(map<string, Gate *> primary_inputs, map<string, Gate *> primary_o
         Gate* g = gate_queue.front();
         gate_queue.pop();
 
-        cout << g->gate_name <<endl;
+        // cout << g->gate_name <<endl;
         bool dummy_not = true;
-        for (int i=0; i<g->num_of_inputs(); i++){
-            cout << get<0>(g->inputs[i])->gate_name << " " << get<0>(g->inputs[i])->outputs[0].size() << endl;
-        }
+        // for (int i=0; i<g->num_of_inputs(); i++){
+        //     cout << get<0>(g->inputs[i])->gate_name << " " << get<0>(g->inputs[i])->outputs[0].size() << endl;
+        // }
 
         if (g->gate_name == "not") {
             for (auto output : g->outputs[0]) {
@@ -45,19 +45,19 @@ void deleteNot(map<string, Gate *> primary_inputs, map<string, Gate *> primary_o
                 }
             }
             if (dummy_not) {
-                cout << "fuck" << endl;
+                // cout << "fuck" << endl;
                 Gate* g_in = get<0>(g->inputs[0]);
                 int g_in_index = get<1>(g->inputs[0]);
                 vector<vector<tuple<Gate*, int>>> g_in_outputs_new;
                 for (int i=0; i<g_in->num_of_outputs(); i++) {
-                    cout << "i " << i << endl;
+                    // cout << "i " << i << endl;
                     if (i != g_in_index) {
                         g_in_outputs_new.push_back(g_in->outputs[i]);
                     }
                     else {
                         g_in_outputs_new.push_back({});
                         for (int j=0; j<g_in->outputs[i].size(); j++) {
-                            cout << "j " << j << endl;
+                            // cout << "j " << j << endl;
                             if (get<0>(g_in->outputs[i][j]) != g) {        
                                 // cout << "hi" << endl;
                                 g_in_outputs_new[i].push_back(g_in->outputs[i][j]);
@@ -96,6 +96,6 @@ void deleteNot(map<string, Gate *> primary_inputs, map<string, Gate *> primary_o
 
     }
     cout << "dummy not count: " << dummy_not_count << endl;
-    cout << "gate count: " << gate_count <<endl;
+    // cout << "gate count: " << gate_count <<endl;
 
 }
