@@ -21,12 +21,18 @@ bool compare_pattern(vector<int> pattern, vector<Gate*> inputs, vector<Gate*> ou
     int output_dec = 0;
     int k = 1;
     for (auto outp: output_vals){
-        cout << outp << endl;
+        // cout << outp << endl;
         output_dec += outp * k;
         k *= 2;
     }
 
-    cout << "circuit: " << output_dec << endl;
+    // reset gate values
+    for (auto outp: outputs){
+        reset_gate_value(outp);
+    }
+
+
+    // cout << "circuit: " << output_dec << endl;
 
     // ==== calculate output using the formula ====
     vector<int> words;
@@ -52,19 +58,20 @@ bool compare_pattern(vector<int> pattern, vector<Gate*> inputs, vector<Gate*> ou
         output_mult *= word;
     }
 
-    cout << "calculated: " << output_adder_tree << endl;
+    // cout << "calculated: " << output_adder_tree << endl;
     int mod_num = pow(2, (outputs.size()));
 
     // check equivalence
+    // cout << output_dec << " " << (output_adder_tree % mod_num) << endl;
     return (output_dec == (output_adder_tree % mod_num));
     // return (output_dec == (output_mult % mod_num));
 }
 
 int get_gate_value(Gate* gate){
-    cout << "debug  " << gate->gate_name << " " << gate->value << endl;
+    // cout << "debug  " << gate->gate_name << " " << gate->value << endl;
     if (gate->value != -1) return gate->value;
     string oper = gate->gate_name;
-    cout << oper << endl;
+    // cout << oper << endl;
     if (oper == "and"){
         int val1 = get_gate_value(get<0>(gate->inputs[0]));
         int val2 = get_gate_value(get<0>(gate->inputs[1]));
@@ -115,5 +122,14 @@ int get_gate_value(Gate* gate){
         int val = get_gate_value(get<0>(gate->inputs[0]));
         gate->value = val;
         return gate->value;
+    }
+}
+
+void reset_gate_value(Gate* gate){
+    if (gate->value == -1) return;
+    gate->value = -1;
+    for (auto inp: gate->inputs){
+        Gate* inp_gate = get<0>(inp);
+        reset_gate_value(inp_gate);
     }
 }

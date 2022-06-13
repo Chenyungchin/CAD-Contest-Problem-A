@@ -10,8 +10,8 @@
 
 int main() {
     // string file_path = "full_adder.v";
-    // string file_path = "top_primitive.v";
-    string file_path = "20.v";
+    string file_path = "top_primitive.v";
+    // string file_path = "20.v";
     string file_out_path = "out.v";
     string module_name;
     map<string, int> module_inputs;
@@ -19,7 +19,7 @@ int main() {
     tuple<map<string, Gate *>, map<string, Gate *>> primary = read_file(file_path, &module_name, &module_inputs, &module_outputs);
     map<string, Gate *> primary_inputs = get<0>(primary);
     map<string, Gate *> primary_outputs = get<1>(primary);
-    cout << module_name << endl;
+    // cout << module_name << endl;
     // for (auto input : module_inputs) {
     //     cout << input.first << " " << input.second << endl;
     // }
@@ -50,7 +50,7 @@ int main() {
 
     deleteBuf(primary_inputs, primary_outputs);
 
-    vector<int> pattern = {1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0};
+    
     vector<Gate*> inputs, outputs;
     for (auto inp: primary_inputs){
         inputs.push_back(inp.second);
@@ -59,10 +59,12 @@ int main() {
         outputs.push_back(oup.second);
     }
     vector<int> inputs_operand_bit = {4, 4, 4};
-    bool dao = compare_pattern(pattern, inputs, outputs, inputs_operand_bit);
-    // bool dao = pattern_controller(inputs, outputs, inputs_operand_bit);
-    cout << (dao ? "It is the same!" : "It is different!") << endl;
-
+    // bool dao = compare_pattern(pattern, inputs, outputs, inputs_operand_bit);
+    auto tmp = pattern_controller(inputs, outputs, inputs_operand_bit);
+    bool found = get<0>(tmp);
+    vector<Gate*> circ_inputs = get<1>(tmp); 
+    vector<Gate*> circ_outputs = get<2>(tmp);
+    cout << found << endl;
     bool write_complete = write_file(file_out_path, module_name, module_inputs, module_outputs, primary_inputs);
 
     // if (write_complete = true) {
