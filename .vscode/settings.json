@@ -3,5 +3,6 @@
     "*.tcc": "cpp",
     "iostream": "cpp",
     "tuple": "cpp"
-  }
+  },
+  "C_Cpp.errorSquiggles": "Enabled"
 }
