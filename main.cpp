@@ -10,15 +10,17 @@
 
 int main() {
     // string file_path = "full_adder.v";
-    string file_path = "top_primitive.v";
+    string file_path = "release/test01/top_primitive.v";
     // string file_path = "20.v";
     string file_out_path = "out.v";
     string module_name;
     map<string, int> module_inputs;
     map<string, int> module_outputs;
-    tuple<map<string, Gate *>, map<string, Gate *>> primary = read_file(file_path, &module_name, &module_inputs, &module_outputs);
+    tuple<map<string, Gate *>, map<string, Gate *>, int> primary = read_file(file_path, &module_name, &module_inputs, &module_outputs);
     map<string, Gate *> primary_inputs = get<0>(primary);
     map<string, Gate *> primary_outputs = get<1>(primary);
+    int gate_count = get<2>(primary);
+    cout << gate_count << endl;
     // cout << module_name << endl;
     // for (auto input : module_inputs) {
     //     cout << input.first << " " << input.second << endl;
@@ -58,7 +60,7 @@ int main() {
     for (auto oup: primary_outputs){
         outputs.push_back(oup.second);
     }
-    vector<int> inputs_operand_bit = {4, 4, 4};
+    vector<int> inputs_operand_bit = {18, 18, 18};
     // bool dao = compare_pattern(pattern, inputs, outputs, inputs_operand_bit);
     auto tmp = pattern_controller(inputs, outputs, inputs_operand_bit);
     bool found = get<0>(tmp);
