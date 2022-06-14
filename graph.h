@@ -9,6 +9,7 @@ public:
     vector<tuple<Gate*, int>> inputs;
     vector<vector<tuple<Gate*, int>>> outputs;
     string gate_name;
+    vector<int> inputs_operand_bit;
     int no; 
     int traversal;
     int value;

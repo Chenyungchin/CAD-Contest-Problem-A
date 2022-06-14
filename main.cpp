@@ -4,8 +4,10 @@
 #include "netlist2graph.h"
 #include "graph2rtl.h"
 #include "deleteBuf.h"
+#include "deleteNot.h"
 #include "Compare_pattern.h"
 #include "Pattern_controller.h"
+#include "graphReduction.h"
 
 
 int main() {
@@ -51,6 +53,7 @@ int main() {
 
 
     deleteBuf(primary_inputs, primary_outputs);
+    deleteNot(primary_inputs, primary_outputs);
 
     
     vector<Gate*> inputs, outputs;
@@ -67,6 +70,7 @@ int main() {
     vector<Gate*> circ_inputs = get<1>(tmp); 
     vector<Gate*> circ_outputs = get<2>(tmp);
     cout << found << endl;
+    graphReduction(found, circ_inputs, circ_outputs, inputs_operand_bit);
     bool write_complete = write_file(file_out_path, module_name, module_inputs, module_outputs, primary_inputs);
 
     // if (write_complete = true) {

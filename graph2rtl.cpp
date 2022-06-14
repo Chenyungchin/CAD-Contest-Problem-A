@@ -19,7 +19,8 @@ bool write_file(string file, string module_name, map<string, int> module_inputs,
                                             make_pair("nor", "~|"), 
                                             make_pair("xor", "^"), 
                                             make_pair("xnor", "~^"), 
-                                            make_pair("buf", "fuck")};
+                                            make_pair("buf", "fuck"), 
+                                            make_pair("++", "fuck2")};
     vector<string> input_list;
     vector<string> output_list;
     int input_num = 0;
@@ -83,22 +84,27 @@ bool write_file(string file, string module_name, map<string, int> module_inputs,
         // cout << wire_count << endl;
         // cout << g->gate_name;
         // for (int i=0; i<g->num_of_inputs(); i++) {
-        //     cout << get<1>(g->inputs[i]);
+        //     cout << get<0>(g->inputs[i])->gate_name;
         // }
         // cout << "\n";
 
-        // f << g->num_of_inputs() << " " << g->num_of_outputs() << " ";
+        // f << g->num_of_inputs() << " " << g->num_of_outputs() <<endl;
         if (g->traversal == 0) {
             // g->no = gate_count;
             gate_count ++;
         }
-        // f << g->gate_name << " g" << g->no << "(";
         string name = g->gate_name;
         vector<pair<string, string>>::iterator op_pair = find_if(Gate_pair.begin(), Gate_pair.end(), [&name](pair<string, string> p){return p.first == name;});
         string op = (*op_pair).second;
 
+        
         f << "assign " ;
+        // TODO: a gate with many outputs
+        if (g->outputs.size() > 1) f << "{";
+        int output_count = 0;
         for (auto output : g->outputs) {
+            output_count ++;
+            if (output_count > 1) f << " , ";
             bool in_output_list = false; // Check if there's a fanout is primary output
             int primary_output_fanout_idx;
             for (int i=0; i<output.size(); i++) {
@@ -114,14 +120,14 @@ bool write_file(string file, string module_name, map<string, int> module_inputs,
                 }
             }
             if (in_output_list) {
-                f << get<0>(output[primary_output_fanout_idx])->gate_name << " = ";
+                f << get<0>(output[primary_output_fanout_idx])->gate_name;
                 g->out_wire_idx.push_back(get<0>(output[primary_output_fanout_idx])->gate_name);
                 for (int i=0; i<output.size(); i++) {
                     get<0>(output[i])->in_wire_idx.push_back(get<0>(output[primary_output_fanout_idx])->gate_name);
                 }
             }
             else {
-                f << "w" << wire_count << " = ";
+                f << "w" << wire_count;
                 g->out_wire_idx.push_back(to_string(wire_count));
                 for (int i=0; i<output.size(); i++) {
                     get<0>(output[i])->in_wire_idx.push_back(to_string(wire_count));
@@ -129,38 +135,58 @@ bool write_file(string file, string module_name, map<string, int> module_inputs,
                 wire_count ++;
             }
         }
+        if (g->outputs.size() > 1) f << "} = ";
+        else f << " = ";
+        
         int tmp_count = 0;
         int input_count = 0;
-        for (auto input: g->inputs) {
-            if (op == "~") {
-                f << op;
+        if (g->gate_name == "++") {
+            for (auto n : g->inputs_operand_bit) {
+                f << "{";
+                for (int i=0; i<n; i++) {
+                    f << get<0>(g->inputs[input_count+i])->gate_name;
+                    if (i != n-1) f << ", ";
+                }
+                f << "}";
+                input_count += n;
+                if (input_count < g->num_of_inputs()) f << " + ";
+                else f << ";" << endl;
             }
-            if (find(input_list.begin(), input_list.end(), get<0>(input)->gate_name) != input_list.end()) {
-                f << get<0>(input)->gate_name;
-            }
-            else {
-                f << "w" << g->in_wire_idx[tmp_count];
-                tmp_count ++;
-            }
-            input_count ++;
-            if (input_count != g->num_of_inputs()) {
-                f << " " << op << " ";
-            }
-            else {
-                // f << ");" << endl;
-                f << ";" << endl;
-            }
-        }
-    }
 
-    f << "wire ";
-    for (int i=0; i<wire_count; i++) {
-        f << "w" << i;
-        if (i < wire_count-1) {
-            f << ", ";
+        }
+        else {
+            for (auto input: g->inputs) {
+                if (op == "~") {
+                    f << op;
+                }
+                if (find(input_list.begin(), input_list.end(), get<0>(input)->gate_name) != input_list.end()) {
+                    f << get<0>(input)->gate_name;
+                }
+                else {
+                    f << "w" << g->in_wire_idx[tmp_count];
+                    tmp_count ++;
+                }
+                input_count ++;
+                if (input_count != g->num_of_inputs()) {
+                    f << " " << op << " ";
+                }
+                else {
+                    // f << ");" << endl;
+                    f << ";" << endl;
+                }
+            }
         }
     }
-    f << ";" << endl;
+    if (wire_count > 0) {
+        f << "wire ";
+        for (int i=0; i<wire_count; i++) {
+            f << "w" << i;
+            if (i < wire_count-1) {
+                f << ", ";
+            }
+        }
+        f << ";" << endl;
+    }
 
     f << "endmodule";
     f.close();
