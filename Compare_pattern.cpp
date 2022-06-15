@@ -6,7 +6,7 @@
 using namespace std;
 
 
-bool compare_pattern(vector<int> pattern, vector<Gate*> inputs, vector<Gate*> outputs, vector<int> inputs_operand_bit){
+vector<bool> compare_pattern(vector<int> pattern, vector<Gate*> inputs, vector<Gate*> outputs, vector<int> inputs_operand_bit){
     // ==== traversing the graph to get output ====
     // stream in the given pattern
     for (int i=0; i<inputs.size(); i++){
@@ -18,11 +18,11 @@ bool compare_pattern(vector<int> pattern, vector<Gate*> inputs, vector<Gate*> ou
         int gate_val = get_gate_value(outp);
         output_vals.push_back(gate_val);
     }
-    int output_dec = 0;
+    int output_circuit = 0;
     int k = 1;
     for (auto outp: output_vals){
         // cout << outp << endl;
-        output_dec += outp * k;
+        output_circuit += outp * k;
         k *= 2;
     }
 
@@ -58,13 +58,19 @@ bool compare_pattern(vector<int> pattern, vector<Gate*> inputs, vector<Gate*> ou
         output_mult *= word;
     }
 
+    vector<int> outputs_calc = {output_adder_tree, output_mult};
+
     // cout << "calculated: " << output_adder_tree << endl;
     int mod_num = pow(2, (outputs.size()));
 
     // check equivalence
+    vector<bool> outputs_Is_same;
+    for (int val: outputs_calc){
+        outputs_Is_same.push_back(output_circuit == (val%mod_num));
+    }
     // cout << output_dec << " " << (output_adder_tree % mod_num) << endl;
-    return (output_dec == (output_adder_tree % mod_num));
-    // return (output_dec == (output_mult % mod_num));
+    // return (output_circuit == (output_adder_tree % mod_num));
+    return outputs_Is_same;
 }
 
 int get_gate_value(Gate* gate){

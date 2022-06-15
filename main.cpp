@@ -12,7 +12,7 @@
 
 int main() {
     // string file_path = "full_adder.v";
-    string file_path = "release/test01/top_primitive.v";
+    string file_path = "release/test18/top_primitive.v";
     // string file_path = "20.v";
     string file_out_path = "out.v";
     string module_name;
@@ -52,6 +52,13 @@ int main() {
     // }
 
 
+    // test constant inputs
+    // Gate* dao = primary_inputs.find("1'b0")->second;
+    // for (auto d: dao->outputs[0]){
+    //     cout << get<0>(d)->gate_name << endl;
+    // }
+
+
     deleteBuf(primary_inputs, primary_outputs);
     deleteNot(primary_inputs, primary_outputs);
 
@@ -63,14 +70,15 @@ int main() {
     for (auto oup: primary_outputs){
         outputs.push_back(oup.second);
     }
-    vector<int> inputs_operand_bit = {18, 18, 18};
+    vector<int> inputs_operand_bit = {4, 4, 4};
     // bool dao = compare_pattern(pattern, inputs, outputs, inputs_operand_bit);
     auto tmp = pattern_controller(inputs, outputs, inputs_operand_bit);
-    bool found = get<0>(tmp);
+    vector<bool> found = get<0>(tmp);
     vector<Gate*> circ_inputs = get<1>(tmp); 
     vector<Gate*> circ_outputs = get<2>(tmp);
-    cout << found << endl;
-    graphReduction(found, circ_inputs, circ_outputs, inputs_operand_bit);
+    for (bool f: found) cout << f << " ";
+    cout << endl;
+    // graphReduction(found, circ_inputs, circ_outputs, inputs_operand_bit);
     bool write_complete = write_file(file_out_path, module_name, module_inputs, module_outputs, primary_inputs);
 
     // if (write_complete = true) {

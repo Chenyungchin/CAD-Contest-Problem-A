@@ -1,14 +1,12 @@
-module top(a, b, ci, s, co);
-input wire a;
-input wire b;
-input wire ci;
-output wire co;
-output wire s;
-assign w0 = a ~^ b;
-assign w1 = a & b;
-assign w2 = w0 ~^ ci;
-assign w3 = ci & w0;
-assign s = ~w2;
-assign co = w1 | w3;
-wire w0, w1, w2, w3;
-endmodule
+module top(in1, in2, in3, in4, in5, in6, out1, out2, out3, out4, out5);
+input wire [1:0] in1;
+input wire [1:0] in2;
+input wire [4:0] in3;
+input wire [2:0] in4;
+input wire [4:0] in5;
+input wire [2:0] in6;
+output wire [4:0] out1;
+output wire out2;
+output wire [4:0] out3;
+output wire out4;
+output wire [4:0] out5;

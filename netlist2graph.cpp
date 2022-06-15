@@ -152,7 +152,8 @@ tuple<map<string, Gate *>, map<string, Gate *>, int> read_file(string file, stri
 
     map<string, Gate *> primary_inputs;
     map<string, Gate *> primary_outputs;
-    // initialize primary inputs and outputs
+    // ======== initialize primary inputs and outputs ==========
+    // inputs
     for (auto inp : (*module_inputs))
     {
         int inp_bits = inp.second;
@@ -171,6 +172,13 @@ tuple<map<string, Gate *>, map<string, Gate *>, int> read_file(string file, stri
             }
         }
     }
+    // deal with constant 1'b0, 1'b1
+    Gate* const_0_gate = new Gate("1'b0");
+    Gate* const_1_gate = new Gate("1'b1");
+    primary_inputs["1'b0"] = const_0_gate;
+    primary_inputs["1'b1"] = const_1_gate;
+
+    // outputs
     for (auto outp : (*module_outputs))
     {
         int outp_bits = outp.second;
