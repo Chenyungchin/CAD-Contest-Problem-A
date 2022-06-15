@@ -64,6 +64,10 @@ vector<int> PQM(bool** table, int num_of_minterm, int num_of_pattern) {
         }
         dominance.push_back(largest_minterm);
         minterm_size.erase(minterm_size.begin());
+        if (minterm_size.size() == 0) {
+            cout << "I give up." << endl;
+            break;
+        }
     }
 
 
