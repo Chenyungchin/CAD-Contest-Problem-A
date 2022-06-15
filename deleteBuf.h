@@ -6,7 +6,7 @@
 
 using namespace std;
 
-void deleteBuf(map<string, Gate *> primary_inputs, map<string, Gate *> primary_outputs);
+void deleteBuf(vector<tuple<string, Gate *>> primary_inputs, vector<tuple<string, Gate *>> primary_outputs);
 
 
 

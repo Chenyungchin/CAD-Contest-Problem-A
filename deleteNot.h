@@ -6,7 +6,7 @@
 
 using namespace std;
 
-void deleteNot(map<string, Gate *> primary_inputs, map<string, Gate *> primary_outputs);
+void deleteNot(vector<tuple<string, Gate *>> primary_inputs, vector<tuple<string, Gate *>> primary_outputs);
 
 
 

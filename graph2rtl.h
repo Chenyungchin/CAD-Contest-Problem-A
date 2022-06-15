@@ -5,6 +5,6 @@
 #include "graph.h"
 #include <array>
 
-bool write_file(string file, string module_name, map<string, int> module_inputs, map<string, int> module_outputs, map<string, Gate *> primary_inputs);
+bool write_file(string file, string module_name, vector<tuple<string, int>> module_inputs, vector<tuple<string, int>> module_outputs, vector<tuple<string, Gate *>> primary_inputs);
 
 #endif

@@ -2,10 +2,10 @@
 
 using namespace std;
 
-void deleteBuf(map<string, Gate *> primary_inputs, map<string, Gate *> primary_outputs) {
+void deleteBuf(vector<tuple<string, Gate *>> primary_inputs, vector<tuple<string, Gate *>> primary_outputs) {
     vector<string> output_list;
     for (auto output : primary_outputs) {
-        output_list.push_back(output.first);
+        output_list.push_back(get<0>(output));
     }
     
     int buf_count = 0;
@@ -14,11 +14,11 @@ void deleteBuf(map<string, Gate *> primary_inputs, map<string, Gate *> primary_o
     vector<int> visited_gate;
 
     for (auto input : primary_inputs) {
-        for (int i=0; i<input.second->num_of_outputs(); i++) {
-            for (int j=0; j<input.second->outputs[i].size(); j++) {
-                if (find(visited_gate.begin(), visited_gate.end(), get<0>(input.second->outputs[i][j])->no) == visited_gate.end())
-                    gate_queue.push(get<0>(input.second->outputs[i][j]));
-                    visited_gate.push_back(get<0>(input.second->outputs[i][j])->no);
+        for (int i=0; i<get<1>(input)->num_of_outputs(); i++) {
+            for (int j=0; j<get<1>(input)->outputs[i].size(); j++) {
+                if (find(visited_gate.begin(), visited_gate.end(), get<0>(get<1>(input)->outputs[i][j])->no) == visited_gate.end())
+                    gate_queue.push(get<0>(get<1>(input)->outputs[i][j]));
+                    visited_gate.push_back(get<0>(get<1>(input)->outputs[i][j])->no);
             }
         }
     }

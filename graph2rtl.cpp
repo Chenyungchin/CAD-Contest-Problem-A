@@ -7,7 +7,7 @@
 using namespace std;
 
 
-bool write_file(string file, string module_name, map<string, int> module_inputs, map<string, int> module_outputs, map<string, Gate *> primary_inputs) {
+bool write_file(string file, string module_name, vector<tuple<string, int>> module_inputs, vector<tuple<string, int>> module_outputs, vector<tuple<string, Gate*>> primary_inputs) {
     fstream f;
     f.open(file, ios::out | ios::trunc);
     f << module_name << endl;
@@ -27,31 +27,31 @@ bool write_file(string file, string module_name, map<string, int> module_inputs,
     int output_num = 0;
     for (auto input : module_inputs) {
         f << "input wire ";
-        if (input.second == 1) {
-            input_list.push_back(input.first);
+        if (get<1>(input) == 1) {
+            input_list.push_back(get<0>(input));
             input_num ++;
         }
-        else if (input.second > 1) {
-            for (int i=0; i<input.second; i++) {
-                input_list.push_back(input.first + "[" + to_string(i) + "]");
+        else if (get<1>(input) > 1) {
+            for (int i=0; i<get<1>(input); i++) {
+                input_list.push_back(get<0>(input) + "[" + to_string(i) + "]");
             }
-            f << "[" << input.second-1 << ":0] ";
+            f << "[" << get<1>(input)-1 << ":0] ";
         }
-        f << input.first << ";" << endl;
+        f << get<0>(input) << ";" << endl;
     }
     for (auto output : module_outputs) {
         f << "output wire ";
-        if (output.second == 1) {
-            output_list.push_back(output.first);
+        if (get<1>(output) == 1) {
+            output_list.push_back(get<0>(output));
             output_num ++;
         }
-        else if (output.second > 1) {
-            for (int i=0; i<output.second; i++) {
-                output_list.push_back(output.first + "[" + to_string(i) + "]");
+        else if (get<1>(output) > 1) {
+            for (int i=0; i<get<1>(output); i++) {
+                output_list.push_back(get<0>(output) + "[" + to_string(i) + "]");
             }
-            f << "[" << output.second-1 << ":0] ";
+            f << "[" << get<1>(output)-1 << ":0] ";
         }
-        f << output.first << ";" << endl;
+        f << get<0>(output) << ";" << endl;
     }
     
     vector<Gate *> gate_list;
@@ -59,18 +59,18 @@ bool write_file(string file, string module_name, map<string, int> module_inputs,
     queue<Gate *> gate_queue;
     int gate_count = 0;
     for (auto input : primary_inputs) {
-        // input.second->no = gate_count;
+        // get<1>(input)->no = gate_count;
         // gate_count ++;
-        for (int i=0; i<input.second->num_of_outputs(); i++) {
-            for (int j=0; j<input.second->outputs[i].size(); j++) {
-                if (get<0>(input.second->outputs[i][j])->traversal == 0) {
-                    // get<0>(input.second->outputs[i][j])->no = gate_count;
+        for (int i=0; i<get<1>(input)->num_of_outputs(); i++) {
+            for (int j=0; j<get<1>(input)->outputs[i].size(); j++) {
+                if (get<0>(get<1>(input)->outputs[i][j])->traversal == 0) {
+                    // get<0>(get<1>(input)->outputs[i][j])->no = gate_count;
                     gate_count ++;
                 }
-                get<0>(input.second->outputs[i][j])->traversal ++;
-                if (get<0>(input.second->outputs[i][j])->traversal == get<0>(input.second->outputs[i][j])->num_of_inputs()) {
-                    gate_list.push_back(get<0>(input.second->outputs[i][j]));
-                    gate_queue.push(get<0>(input.second->outputs[i][j]));
+                get<0>(get<1>(input)->outputs[i][j])->traversal ++;
+                if (get<0>(get<1>(input)->outputs[i][j])->traversal == get<0>(get<1>(input)->outputs[i][j])->num_of_inputs()) {
+                    gate_list.push_back(get<0>(get<1>(input)->outputs[i][j]));
+                    gate_queue.push(get<0>(get<1>(input)->outputs[i][j]));
                 }
             }
         }

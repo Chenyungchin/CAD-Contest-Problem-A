@@ -5,7 +5,7 @@
 #include "graph.h"
 #include <array>
 
-tuple<map<string, Gate *>, map<string, Gate *>, int> read_file(string file, string *module_name, map<string, int> *module_inputs, map<string, int> *module_outputs);
+tuple<vector<tuple<string, Gate *>>, vector<tuple<string, Gate *>>, int> read_file(string file, string *module_name, vector<tuple<string, int>> *module_inputs, vector<tuple<string, int>> *module_outputs);
 tuple<int, vector<string>> split_ports(string str);
 
 #endif

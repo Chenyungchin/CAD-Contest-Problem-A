@@ -15,30 +15,32 @@ int main()
 {
     // string file_path = "full_adder.v";
     string file_path = "release/test03/top_primitive.v";
-    // string file_path = "20.v";
+    
     string file_out_path = "out2.v";
     string module_name;
-    map<string, int> module_inputs;
-    map<string, int> module_outputs;
-    tuple<map<string, Gate *>, map<string, Gate *>, int> primary = read_file(file_path, &module_name, &module_inputs, &module_outputs);
-    map<string, Gate *> primary_inputs = get<0>(primary);
-    map<string, Gate *> primary_outputs = get<1>(primary);
+    vector<tuple<string, int>> module_inputs;
+    vector<tuple<string, int>> module_outputs;
+    tuple<vector<tuple<string, Gate *>>, vector<tuple<string, Gate *>>, int> primary = read_file(file_path, &module_name, &module_inputs, &module_outputs);
+    vector<tuple<string, Gate *>> primary_inputs = get<0>(primary);
+    vector<tuple<string, Gate *>> primary_outputs = get<1>(primary);
     int gate_count = get<2>(primary);
     cout << gate_count << endl;
     float reduction_rate = evaluate(file_out_path, gate_count);
     cout << "reduction rate: " << reduction_rate << endl;
+
+
     // cout << module_name << endl;
     // for (auto input : module_inputs) {
-    //     cout << input.first << " " << input.second << endl;
+    //     cout << get<0>(input) << " " << get<1>(input) << endl;
     // }
     // for (auto output : module_outputs) {
-    //     cout << output.first << " " << output.second << endl;
+    //     cout << get<0>(output) << " " << get<1>(output) << endl;
     // }
     // int out_num = 0;
     // for (auto input : primary_inputs) {
-    //     cout << input.first << " " << input.second->gate_name << " ";
-    //     cout << input.second->num_of_inputs() << " " <<  input.second->num_of_outputs() << endl;
-    //     for (auto dao: input.second->outputs){ // iterate every output gate
+    //     cout << get<0>(input) << " " << get<1>(input)->gate_name << " ";
+    //     cout << get<1>(input)->num_of_inputs() << " " <<  get<1>(input)->num_of_outputs() << endl;
+    //     for (auto dao: get<1>(input)->outputs){ // iterate every output gate
     //         out_num ++;
     //         cout << "out_num: " << out_num << endl;
     //         for (auto daodao: dao){// iterate every fanout of the gate
@@ -47,12 +49,12 @@ int main()
     //         }
     //     }
     //     out_num = 0;
-    //     // cout << input.second->outputs[0]->gate_name << " " << input.second->outputs[0]->inputs[0]->gate_name << " " << input.second->outputs[0]->inputs[1]->gate_name << endl;
-    //     // cout << input.second->outputs[1]->gate_name << " " << input.second->outputs[1]->inputs[0]->gate_name << " " << input.second->outputs[1]->inputs[1]->gate_name << endl;
+    //     // cout << get<1>(input)->outputs[0]->gate_name << " " << get<1>(input)->outputs[0]->inputs[0]->gate_name << " " << get<1>(input)->outputs[0]->inputs[1]->gate_name << endl;
+    //     // cout << get<1>(input)->outputs[1]->gate_name << " " << get<1>(input)->outputs[1]->inputs[0]->gate_name << " " << get<1>(input)->outputs[1]->inputs[1]->gate_name << endl;
     // }
     // for (auto output : primary_outputs) {
-    //     cout << output.first << " " << output.second->gate_name << " ";
-    //     cout << output.second->num_of_inputs() << " " <<  output.second->num_of_outputs() << endl;
+    //     cout << get<0>(output) << " " << get<1>(output)->gate_name << " ";
+    //     cout << get<1>(output)->num_of_inputs() << " " <<  get<1>(output)->num_of_outputs() << endl;
     // }
 
     // test constant inputs
@@ -61,40 +63,46 @@ int main()
     //     cout << get<0>(d)->gate_name << endl;
     // }
 
+    
     deleteBuf(primary_inputs, primary_outputs);
     deleteNot(primary_inputs, primary_outputs);
 
     
     vector<Gate*> inputs, outputs;
     for (auto inp: primary_inputs){
-        inputs.push_back(inp.second);
+        // inputs.push_back(inp.second);
+        inputs.push_back(get<1>(inp));
     }
     for (auto oup: primary_outputs){
-        outputs.push_back(oup.second);
+        // outputs.push_back(oup.second);
+        outputs.push_back(get<1>(oup));
     }
 
 
     vector<int> inputs_operand_bit;
 
     for (auto inp: module_inputs){
-        inputs_operand_bit.push_back(inp.second);
+        inputs_operand_bit.push_back(get<1>(inp));
     }
 
     // for (int i=0; i<inputs_operand_bit.size(); i++) cout << inputs_operand_bit[i] << " ";
 
     int num_of_pattern = 10;
+    // cout << "dao" << endl;
     auto table = pattern_controller(inputs, outputs, inputs_operand_bit, num_of_pattern);
+    // cout << "dao2" << endl;
     
     int num_of_inputs = inputs_operand_bit.size();
-    // now only 2 or 3 inputs are considered
-    int num_of_function_terms = (num_of_inputs == 2) ? 6 :
-                                (num_of_inputs == 3) ? 11 : 0;
+
+    int num_of_function_terms = (num_of_inputs == 2) ? 5 :
+                                (num_of_inputs == 3) ? 10 : 
+                                (num_of_inputs == 4) ? 10 : num_of_inputs;
     int num_of_function_tested = pow(3, num_of_function_terms);
 
 
     // debug
-    // int bias = 0;
-    // for (int i=0; i<num_of_function_terms; i++) bias += pow(3, i);
+    int bias = 0;
+    for (int i=0; i<num_of_function_terms; i++) bias += pow(3, i);
     // cout << bias << endl;
 
 
@@ -111,6 +119,7 @@ int main()
 
         // calc signs
         int index = cover[i];
+        // cout << index << endl;
         for (int j=0; j<num_of_function_terms; j++){
             int sign = (index % 3) - 1;
             signs.push_back(sign);
@@ -131,6 +140,8 @@ int main()
     // if (write_complete = true) {
     //     cout << "Write Completed" << endl;
     // }
+
+    
 
     return 0;
 }
