@@ -70,33 +70,33 @@ vector<int> PQM(bool** table, int num_of_minterm, int num_of_pattern) {
     return dominance;
 }
 
-int main() {
-    int num_of_pattern = 5;
-    int num_of_minterm = 4;
-    bool** table = new bool*[num_of_pattern];
-    for (int i=0; i<num_of_pattern; i++) {
-        table[i] = new bool[num_of_minterm];
-        for (int j=0; j<num_of_minterm; j++) {
-            table[i][j] = false;
-        }
-    }
-    table[0][0] = true;
-    table[1][0] = true;
-    table[1][1] = true;
-    table[2][1] = true;
-    table[3][1] = true;
-    table[4][1] = true;
-    table[3][2] = true;
-    table[4][2] = true;
-    table[0][3] = true;
-    table[1][3] = true;
-    table[2][3] = true;
+// int main() {
+//     int num_of_pattern = 5;
+//     int num_of_minterm = 4;
+//     bool** table = new bool*[num_of_pattern];
+//     for (int i=0; i<num_of_pattern; i++) {
+//         table[i] = new bool[num_of_minterm];
+//         for (int j=0; j<num_of_minterm; j++) {
+//             table[i][j] = false;
+//         }
+//     }
+//     table[0][0] = true;
+//     table[1][0] = true;
+//     table[1][1] = true;
+//     table[2][1] = true;
+//     table[3][1] = true;
+//     table[4][1] = true;
+//     table[3][2] = true;
+//     table[4][2] = true;
+//     table[0][3] = true;
+//     table[1][3] = true;
+//     table[2][3] = true;
 
-    vector<int> dominance;
-    dominance = PQM(table, num_of_minterm, num_of_pattern);
-    for (int i=0; i<dominance.size(); i++) {
-        cout << dominance[i] << " ";
-    }
+//     vector<int> dominance;
+//     dominance = PQM(table, num_of_minterm, num_of_pattern);
+//     for (int i=0; i<dominance.size(); i++) {
+//         cout << dominance[i] << " ";
+//     }
 
-    return 0;
-}
+//     return 0;
+// }

@@ -9,11 +9,12 @@
 #include "Pattern_controller.h"
 #include "graphReduction.h"
 #include "evaluate.h"
+#include "PQM.h"
 
 int main()
 {
     // string file_path = "full_adder.v";
-    string file_path = "release/test01/top_primitive.v";
+    string file_path = "release/test03/top_primitive.v";
     // string file_path = "20.v";
     string file_out_path = "out2.v";
     string module_name;
@@ -71,11 +72,18 @@ int main()
     for (auto oup: primary_outputs){
         outputs.push_back(oup.second);
     }
-    vector<int> inputs_operand_bit = {4, 4, 4};
 
-    int num_of_pattern = 1024;
 
-    auto tmp = pattern_controller(inputs, outputs, inputs_operand_bit, num_of_pattern);
+    vector<int> inputs_operand_bit;
+
+    for (auto inp: module_inputs){
+        inputs_operand_bit.push_back(inp.second);
+    }
+
+    // for (int i=0; i<inputs_operand_bit.size(); i++) cout << inputs_operand_bit[i] << " ";
+
+    int num_of_pattern = 10;
+    auto table = pattern_controller(inputs, outputs, inputs_operand_bit, num_of_pattern);
     
     int num_of_inputs = inputs_operand_bit.size();
     // now only 2 or 3 inputs are considered
@@ -83,17 +91,39 @@ int main()
                                 (num_of_inputs == 3) ? 11 : 0;
     int num_of_function_tested = pow(3, num_of_function_terms);
 
-    int bias = 0;
-    for (int i=0; i<num_of_function_terms; i++) bias += pow(3, i);
+
+    // debug
+    // int bias = 0;
+    // for (int i=0; i<num_of_function_terms; i++) bias += pow(3, i);
+    // cout << bias << endl;
 
 
-    for (int i=0; i<num_of_pattern; i++){
-        for (int j=0; j<num_of_function_tested; j++){
-            if (j > bias + 30 && j < bias + 45) cout << tmp[i][j] << " ";
+    // for (int i=0; i<num_of_pattern; i++){
+    //     for (int j=0; j<num_of_function_tested; j++){
+    //         if (j > bias + 30 && j < bias + 45) cout << table[i][j] << " ";
+    //     }
+    //     cout << endl;
+    // }
+
+    vector<int> cover = PQM(table, num_of_function_tested, num_of_pattern);
+    for (int i=0; i<cover.size(); i++){
+        vector<int> signs;
+
+        // calc signs
+        int index = cover[i];
+        for (int j=0; j<num_of_function_terms; j++){
+            int sign = (index % 3) - 1;
+            signs.push_back(sign);
+            index /= 3;
+        }
+
+        // debug
+        for (int sign: signs){
+            cout << sign << " ";
         }
         cout << endl;
     }
-    
+    cout << endl;
 
     // graphReduction(found, circ_inputs, circ_outputs, inputs_operand_bit);
     bool write_complete = write_file(file_out_path, module_name, module_inputs, module_outputs, primary_inputs);
