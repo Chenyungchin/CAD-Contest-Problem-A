@@ -6,11 +6,17 @@
 using namespace std;
 
 
-vector<bool> compare_pattern(vector<int> pattern, vector<Gate*> inputs, vector<Gate*> outputs, vector<int> inputs_operand_bit){
+bool* compare_pattern(vector<int> pattern, vector<Gate*> inputs, vector<Gate*> outputs, vector<int> inputs_operand_bit){
     // ==== traversing the graph to get output ====
     // stream in the given pattern
+    int const_gate = 0;
     for (int i=0; i<inputs.size(); i++){
-        inputs[i]->value = pattern[i];
+        if (inputs[i]->gate_name == "1'b0" || inputs[i]->gate_name == "1'b1"){
+            const_gate += 1;
+        }
+        else{
+            inputs[i]->value = pattern[i-const_gate];
+        }
     }
     // calc gate value by top down DP from output
     vector<int> output_vals;
@@ -31,6 +37,10 @@ vector<bool> compare_pattern(vector<int> pattern, vector<Gate*> inputs, vector<G
         reset_gate_value(outp);
     }
 
+    // // debug
+    // for (auto val: pattern) cout << val << " ";
+    // cout << endl;
+
 
     // cout << "circuit: " << output_dec << endl;
 
@@ -50,27 +60,67 @@ vector<bool> compare_pattern(vector<int> pattern, vector<Gate*> inputs, vector<G
         word = 0;
         start_index += bits;
     }
+
+    // // debug
+    // for (auto val: words) cout << val << " ";
+    // cout << endl;
+
+    int num_of_inputs = inputs_operand_bit.size();
+    // now only 2 or 3 inputs are considered
+    int num_of_function_terms = (num_of_inputs == 2) ? 6 :
+                                (num_of_inputs == 3) ? 11 : 0;
+    int num_of_function_tested = pow(3, num_of_function_terms);
+
+    vector<int> term_vals;
     
-    int output_adder_tree = 0;
-    int output_mult = 1;
-    for (auto word: words){
-        output_adder_tree += word;
-        output_mult *= word;
+    if (num_of_inputs == 2){
+        int a = words[0];
+        int b = words[1];
+        int tmp[num_of_function_terms] = {1, a, b, a*b, a*a, b*b};
+        for (auto term: tmp){
+            term_vals.push_back(term);
+        }
+    }
+    else{ // num_of_inputs == 3
+        int a = words[0];
+        int b = words[1];
+        int c = words[2];
+        int tmp[num_of_function_terms] = {1, a, b, c, a*b, b*c, c*a, a*a, b*b, c*c, a*b*c};
+        for (auto term: tmp){
+            term_vals.push_back(term);
+        }
     }
 
-    vector<int> outputs_calc = {output_adder_tree, output_mult};
-
-    // cout << "calculated: " << output_adder_tree << endl;
+    bool* bool_row = new bool[num_of_function_tested];
     int mod_num = pow(2, (outputs.size()));
+    
 
-    // check equivalence
-    vector<bool> outputs_Is_same;
-    for (int val: outputs_calc){
-        outputs_Is_same.push_back(output_circuit == (val%mod_num));
+    for (int i=0; i<num_of_function_tested; i++){
+        vector<int> signs;
+
+        // calc signs
+        int index = i;
+        for (int j=0; j<num_of_function_terms; j++){
+            int sign = (index % 3) - 1;
+            signs.push_back(sign);
+            index /= 3;
+        }
+
+        // calc function values
+        int func_val = 0;
+        for (int j=0; j<num_of_function_terms; j++){
+            func_val += term_vals[j] * signs[j];
+        }
+
+        // check equivalence
+        bool_row[i] = (output_circuit == (func_val % mod_num));
     }
-    // cout << output_dec << " " << (output_adder_tree % mod_num) << endl;
-    // return (output_circuit == (output_adder_tree % mod_num));
-    return outputs_Is_same;
+
+
+    // for (int i=0; i<num_of_function_tested; i++) cout << bool_row[i] << " ";
+    // cout << endl;
+
+    return bool_row;
 }
 
 int get_gate_value(Gate* gate){
@@ -133,6 +183,7 @@ int get_gate_value(Gate* gate){
 
 void reset_gate_value(Gate* gate){
     if (gate->value == -1) return;
+    if (gate->gate_name == "1'b0" || gate->gate_name == "1'b1") return;
     gate->value = -1;
     for (auto inp: gate->inputs){
         Gate* inp_gate = get<0>(inp);

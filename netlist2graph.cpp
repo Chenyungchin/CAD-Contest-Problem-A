@@ -174,7 +174,9 @@ tuple<map<string, Gate *>, map<string, Gate *>, int> read_file(string file, stri
     }
     // deal with constant 1'b0, 1'b1
     Gate* const_0_gate = new Gate("1'b0");
+    const_0_gate->value = 0;
     Gate* const_1_gate = new Gate("1'b1");
+    const_1_gate->value = 1;
     primary_inputs["1'b0"] = const_0_gate;
     primary_inputs["1'b1"] = const_1_gate;
 

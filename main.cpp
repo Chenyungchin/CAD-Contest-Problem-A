@@ -12,7 +12,7 @@
 
 int main() {
     // string file_path = "full_adder.v";
-    string file_path = "release/test18/top_primitive.v";
+    string file_path = "release/test01/top_primitive.v";
     // string file_path = "20.v";
     string file_out_path = "out.v";
     string module_name;
@@ -71,13 +71,29 @@ int main() {
         outputs.push_back(oup.second);
     }
     vector<int> inputs_operand_bit = {4, 4, 4};
-    // bool dao = compare_pattern(pattern, inputs, outputs, inputs_operand_bit);
-    auto tmp = pattern_controller(inputs, outputs, inputs_operand_bit);
-    vector<bool> found = get<0>(tmp);
-    vector<Gate*> circ_inputs = get<1>(tmp); 
-    vector<Gate*> circ_outputs = get<2>(tmp);
-    for (bool f: found) cout << f << " ";
-    cout << endl;
+
+    int num_of_pattern = 1024;
+
+    auto tmp = pattern_controller(inputs, outputs, inputs_operand_bit, num_of_pattern);
+    
+    int num_of_inputs = inputs_operand_bit.size();
+    // now only 2 or 3 inputs are considered
+    int num_of_function_terms = (num_of_inputs == 2) ? 6 :
+                                (num_of_inputs == 3) ? 11 : 0;
+    int num_of_function_tested = pow(3, num_of_function_terms);
+
+    int bias = 0;
+    for (int i=0; i<num_of_function_terms; i++) bias += pow(3, i);
+
+
+    for (int i=0; i<num_of_pattern; i++){
+        for (int j=0; j<num_of_function_tested; j++){
+            if (j > bias + 30 && j < bias + 45) cout << tmp[i][j] << " ";
+        }
+        cout << endl;
+    }
+    
+
     // graphReduction(found, circ_inputs, circ_outputs, inputs_operand_bit);
     bool write_complete = write_file(file_out_path, module_name, module_inputs, module_outputs, primary_inputs);
 
