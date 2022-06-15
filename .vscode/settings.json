@@ -3,8 +3,14 @@
     "*.tcc": "cpp",
     "iostream": "cpp",
     "tuple": "cpp",
+<<<<<<< HEAD
     "cmath": "cpp",
     "complex": "cpp"
+=======
+    "iosfwd": "cpp",
+    "string": "cpp",
+    "ostream": "cpp"
+>>>>>>> f67c3febb2343ecd665f9edeedd117beeac2ac93
   },
   "C_Cpp.errorSquiggles": "Enabled"
 }
