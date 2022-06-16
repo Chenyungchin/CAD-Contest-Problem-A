@@ -170,15 +170,17 @@ int main()
         // }
 
         vector<int> cover = PQM(table, num_of_columns, num_of_pattern, column_signs);
+        vector<vector<int>> functions;
         for (int j=0; j<cover.size(); j++){
             vector<int> signs = column_signs[cover[j]];
-
+            functions.push_back(signs);
             // debug
             for (int sign: signs){
                 cout << sign << " ";
             }
             cout << endl;
         }
+        // find_ctrl(functions, inputs, outputs[i], inputs_operand_bit, num_of_pattern)
     }
 
     // graphReduction(found, circ_inputs, circ_outputs, inputs_operand_bit);

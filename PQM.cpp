@@ -88,7 +88,7 @@ vector<int> PQM(bool** table, int num_of_minterm, int num_of_pattern, vector<int
     vector<int> empty;
     while (!complete_cover(cover)) {
         int largest_minterm = minterm_size[0].first;
-        cout << largest_minterm << " size: " << minterm_size[0].second << endl;
+        // cout << largest_minterm << " size: " << minterm_size[0].second << endl;
         minterm_size.erase(minterm_size.begin());
         for (int i=0; i<num_of_pattern; i++) {
             if (table[i][largest_minterm]) cover[i] = true;
