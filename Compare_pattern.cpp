@@ -199,8 +199,8 @@ bool* compare_pattern(vector<int> pattern_vec, vector<Gate*> inputs, vector<Gate
         // check equivalence
         bool_row[i] = (output_circuit == (func_val % mod_num));
 
-        // int bias = 29524;
-        // if (i == bias + 36){
+        // int bias = 29524; // for num_of_inputs == 10
+        // if (i == bias){
         //     cout << "==============" << i << "=============" << endl;
         //     cout << endl;
         //     cout << output_circuit << " " << (func_val % mod_num) << endl;

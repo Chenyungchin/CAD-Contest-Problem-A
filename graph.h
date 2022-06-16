@@ -13,6 +13,7 @@ public:
     int no; 
     int traversal;
     int value;
+    vector<string> transitive_fanin;
     vector<string> in_wire_idx;
     vector<string> out_wire_idx; // Can be a number (of wire) or a output wire name
     int num_of_inputs(){
@@ -22,8 +23,8 @@ public:
         return outputs.size();
     }
 
-    Gate(): inputs(0), outputs(0), gate_name("undefined"), no(-1), traversal(0), value(-1){};
-    Gate(string s): inputs(0), outputs(0), gate_name(s), no(-1), traversal(0), value(-1){};
+    Gate(): inputs(0), outputs(0), gate_name("undefined"), no(-1), traversal(0), value(-1), transitive_fanin(0){};
+    Gate(string s): inputs(0), outputs(0), gate_name(s), no(-1), traversal(0), value(-1), transitive_fanin(0){};
 };
 
 class Wire {

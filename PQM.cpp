@@ -16,6 +16,23 @@ vector<int> PQM(bool** table, int num_of_minterm, int num_of_pattern) {
     for (int i=0; i<num_of_pattern; i++) {
         num_of_1 = 0;
         for (int j=0; j<num_of_minterm; j++) {
+            // sign
+            vector<int> signs;
+            int index = j;
+            cout << index << endl;
+            for (int k=0; k<round(log(num_of_minterm)/log(3)); k++){
+                int sign = (index % 3) - 1;
+                signs.push_back(sign);
+                index /= 3;
+            }
+
+            // debug
+            for (int sign: signs){
+                cout << sign << " ";
+            }
+            cout << endl;
+
+
             if (table[i][j]) {
                 num_of_1 ++;
                 tmp_dominance = j;

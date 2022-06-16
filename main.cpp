@@ -10,6 +10,7 @@
 #include "graphReduction.h"
 #include "evaluate.h"
 #include "PQM.h"
+#include "SubCircuitEC.h"
 
 int main()
 {
@@ -97,6 +98,16 @@ int main()
     //     cout << endl;
     // }
 
+    // construct transitive fanin
+    for (auto output: outputs){
+        for (auto gate: output){
+            construct_transitive_fanin(gate);
+            for (auto d: gate->transitive_fanin){
+                cout << d << " ";
+            }
+            cout << endl;
+        }
+    }
 
     vector<int> inputs_operand_bit;
 
@@ -106,7 +117,7 @@ int main()
 
     // for (int i=0; i<inputs_operand_bit.size(); i++) cout << inputs_operand_bit[i] << " ";
 
-    int num_of_pattern = 10;
+    int num_of_pattern = 100;
     // cout << "dao" << endl;
     // cout << "dao2" << endl;
     
