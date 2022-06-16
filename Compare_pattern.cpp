@@ -45,7 +45,7 @@ int get_constant(vector<Gate*> inputs, vector<Gate*> outputs, vector<int> inputs
 }
 
 
-bool* compare_pattern(vector<int> pattern_vec, vector<Gate*> inputs, vector<Gate*> outputs, vector<int> inputs_operand_bit, int constant_term){
+tuple<bool*, vector<int>*, int> compare_pattern(vector<int> pattern_vec, vector<Gate*> inputs, vector<Gate*> outputs, vector<int> inputs_operand_bit, int constant_term){
     // ==== traversing the graph to get output ====
     // stream in the given pattern
     // int const_gate = 0;
@@ -111,7 +111,7 @@ bool* compare_pattern(vector<int> pattern_vec, vector<Gate*> inputs, vector<Gate
     // cout << "circuit: " << output_dec << endl;
 
     // ==== calculate output using the formula ====
-    vector<int> words = pattern_vec;
+    // vector<int> words = pattern_vec;
     // long long int word = 0;
     // int tmp = 1;
     // int start_index = 0;
@@ -133,18 +133,104 @@ bool* compare_pattern(vector<int> pattern_vec, vector<Gate*> inputs, vector<Gate
     // cout << endl;
 
     int num_of_inputs = inputs_operand_bit.size();
-    // now only 2 or 3 inputs are considered
-    int num_of_function_terms = (num_of_inputs == 2) ? 5 :
-                                (num_of_inputs == 3) ? 10 : 
-                                (num_of_inputs == 4) ? 10 : num_of_inputs;
-    int num_of_function_tested = pow(3, num_of_function_terms);
 
+    auto func_tuple = simulated_function(pattern_vec, output_circuit, num_of_inputs, outputs.size(), constant_term, 5);
+    // bool* bool_row = get<0>(func_tuple);
+    // vector<int>* column_signs = get<1>(func_tuple);
+    // int num_of_columns = get<2>(func_tuple);
+
+    return func_tuple;
+
+
+    // // now only 2 or 3 inputs are considered
+    // int num_of_function_terms = (num_of_inputs == 2) ? 5 :
+    //                             (num_of_inputs == 3) ? 10 : 
+    //                             (num_of_inputs == 4) ? 10 : num_of_inputs;
+    // int num_of_function_tested = pow(3, num_of_function_terms);
+
+    // vector<int> term_vals;
+    
+    // if (num_of_inputs == 2){
+    //     int a = words[0];
+    //     int b = words[1];
+    //     int tmp[num_of_function_terms] = {a, b, a*b, a*a, b*b};
+    //     for (auto term: tmp){
+    //         term_vals.push_back(term);
+    //     }
+    // }
+    // else if (num_of_inputs == 3){
+    //     int a = words[0];
+    //     int b = words[1];
+    //     int c = words[2];
+    //     int tmp[num_of_function_terms] = {a, b, c, a*b, b*c, c*a, a*a, b*b, c*c, a*b*c};
+    //     for (auto term: tmp){
+    //         term_vals.push_back(term);
+    //     }
+    // }
+    // else if (num_of_inputs == 4){
+    //     int a = words[0];
+    //     int b = words[1];
+    //     int c = words[2];
+    //     int d = words[3];
+    //     int tmp[num_of_function_terms] = {a, b, c, d, a*b, a*c, a*d, b*c, b*d, c*d};
+    //     for (auto term: tmp){
+    //         term_vals.push_back(term);
+    //     }
+    // }
+    // else{
+    //     for (auto word: words){
+    //         term_vals.push_back(word);
+    //     }
+    // }
+
+    // bool* bool_row = new bool[num_of_function_tested];
+    // int mod_num = pow(2, (outputs.size()));
+    // // cout << mod_num << endl;
+    
+
+    // for (int i=0; i<num_of_function_tested; i++){
+    //     vector<int> signs;
+
+    //     // calc signs
+    //     int index = i;
+    //     for (int j=0; j<num_of_function_terms; j++){
+    //         int sign = (index % 3) - 1;
+    //         signs.push_back(sign);
+    //         index /= 3;
+    //     }
+
+    //     // calc function values
+    //     int func_val = constant_term;
+    //     for (int j=0; j<num_of_function_terms; j++){
+    //         func_val += term_vals[j] * signs[j];
+    //     }
+
+    //     // check equivalence
+    //     bool_row[i] = (output_circuit == (func_val % mod_num));
+
+    //     // int bias = 29524; // for num_of_inputs == 10
+    //     // if (i == bias){
+    //     //     cout << "==============" << i << "=============" << endl;
+    //     //     cout << endl;
+    //     //     cout << output_circuit << " " << (func_val % mod_num) << endl;
+    //     // }
+    // }
+
+
+    // // for (int i=0; i<num_of_function_tested; i++) cout << bool_row[i] << " ";
+    // // cout << endl;
+
+    // return bool_row;
+}
+
+tuple<bool*, vector<int>*, int> simulated_function(vector<int> words, int output_circuit, int num_of_inputs, int num_of_output_bit, int constant_term, int max_nonzero_term=5){
+    int MAX_NUM_OF_COLUMN = pow(3, 10);
     vector<int> term_vals;
     
     if (num_of_inputs == 2){
         int a = words[0];
         int b = words[1];
-        int tmp[num_of_function_terms] = {a, b, a*b, a*a, b*b};
+        int tmp[] = {a, b, a*b, a*a, b*b};
         for (auto term: tmp){
             term_vals.push_back(term);
         }
@@ -153,7 +239,7 @@ bool* compare_pattern(vector<int> pattern_vec, vector<Gate*> inputs, vector<Gate
         int a = words[0];
         int b = words[1];
         int c = words[2];
-        int tmp[num_of_function_terms] = {a, b, c, a*b, b*c, c*a, a*a, b*b, c*c, a*b*c};
+        int tmp[] = {a, b, c, a*b, b*c, c*a, a*a, b*b, c*c, a*b*c};
         for (auto term: tmp){
             term_vals.push_back(term);
         }
@@ -163,7 +249,7 @@ bool* compare_pattern(vector<int> pattern_vec, vector<Gate*> inputs, vector<Gate
         int b = words[1];
         int c = words[2];
         int d = words[3];
-        int tmp[num_of_function_terms] = {a, b, c, d, a*b, a*c, a*d, b*c, b*d, c*d};
+        int tmp[] = {a, b, c, d, a*b, a*c, a*d, b*c, b*d, c*d};
         for (auto term: tmp){
             term_vals.push_back(term);
         }
@@ -174,9 +260,16 @@ bool* compare_pattern(vector<int> pattern_vec, vector<Gate*> inputs, vector<Gate
         }
     }
 
-    bool* bool_row = new bool[num_of_function_tested];
-    int mod_num = pow(2, (outputs.size()));
+    int num_of_function_terms = term_vals.size();
+
+
+    bool* bool_row = new bool[MAX_NUM_OF_COLUMN];
+    int mod_num = pow(2, (num_of_output_bit));
     // cout << mod_num << endl;
+    
+    int num_of_function_tested = pow(3, num_of_function_terms);
+    int table_column_id = 0;
+    vector<int>* column_signs = new vector<int>[MAX_NUM_OF_COLUMN];
     
 
     for (int i=0; i<num_of_function_tested; i++){
@@ -190,6 +283,12 @@ bool* compare_pattern(vector<int> pattern_vec, vector<Gate*> inputs, vector<Gate
             index /= 3;
         }
 
+        int num_of_nonzero = num_of_function_terms - count(signs.begin(), signs.end(), 0);
+        if (num_of_nonzero > max_nonzero_term){
+            // cout << "too many terms. skip!" << endl;
+            continue;
+        }
+
         // calc function values
         int func_val = constant_term;
         for (int j=0; j<num_of_function_terms; j++){
@@ -197,7 +296,9 @@ bool* compare_pattern(vector<int> pattern_vec, vector<Gate*> inputs, vector<Gate
         }
 
         // check equivalence
-        bool_row[i] = (output_circuit == (func_val % mod_num));
+        bool_row[table_column_id] = (output_circuit == (func_val % mod_num));
+        column_signs[table_column_id] = signs;
+        table_column_id ++;
 
         // int bias = 29524; // for num_of_inputs == 10
         // if (i == bias){
@@ -211,8 +312,9 @@ bool* compare_pattern(vector<int> pattern_vec, vector<Gate*> inputs, vector<Gate
     // for (int i=0; i<num_of_function_tested; i++) cout << bool_row[i] << " ";
     // cout << endl;
 
-    return bool_row;
+    return make_tuple(bool_row, column_signs, table_column_id);
 }
+
 
 int get_gate_value(Gate* gate){
     // cout << "debug  " << gate->gate_name << " " << gate->value << endl;

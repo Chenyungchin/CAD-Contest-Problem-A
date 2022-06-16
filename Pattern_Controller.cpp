@@ -13,7 +13,7 @@ vector<int> pattern_generator(vector<int> inputs_operand_bits){
 }
 
 // tuple<vector<bool>, vector<Gate*>, vector<Gate*>> 
-bool** pattern_controller(vector<Gate*> primary_inputs, vector<Gate*> primary_outputs, vector<int> inputs_operand_bit, int num_of_pattern){
+tuple<bool**, vector<int>*, int> pattern_controller(vector<Gate*> primary_inputs, vector<Gate*> primary_outputs, vector<int> inputs_operand_bit, int num_of_pattern){
     // vector<Gate*> circ_inputs = primary_inputs;
     // vector<Gate*> circ_outputs = primary_outputs;
 
@@ -27,15 +27,22 @@ bool** pattern_controller(vector<Gate*> primary_inputs, vector<Gate*> primary_ou
     int constant_term = get_constant(primary_inputs, primary_outputs, inputs_operand_bit);
     cout << "constant term: " << constant_term << endl;
 
+    vector<int>* column_signs;
+    int num_of_columns;
+
     for (int i=0; i<num_of_pattern; i++){
         vector<int> pattern = pattern_generator(inputs_operand_bit);
-        bool* tmp = compare_pattern(pattern, primary_inputs, primary_outputs, inputs_operand_bit, constant_term);
-        bool_table[i] = tmp;
+        auto func_tuple = compare_pattern(pattern, primary_inputs, primary_outputs, inputs_operand_bit, constant_term);
+        bool* bool_row = get<0>(func_tuple);
+        column_signs = get<1>(func_tuple);
+        num_of_columns = get<2>(func_tuple);
+
+        bool_table[i] = bool_row;
         cout << "iteration " << i << endl;
     }
 
 
-    return bool_table;
+    return make_tuple(bool_table, column_signs, num_of_columns);
     
     
     // while (1){

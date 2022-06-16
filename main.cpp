@@ -148,20 +148,18 @@ int main()
     //     cout << endl;
     // }
     for (int i=0; i<outputs.size(); i++){
-        auto table = pattern_controller(inputs, outputs[i], inputs_operand_bit, num_of_pattern);
+        auto test_tuple = pattern_controller(inputs, outputs[i], inputs_operand_bit, num_of_pattern);
+        bool** table = get<0>(test_tuple);
+        vector<int>* column_signs = get<1>(test_tuple);
+        int num_of_columns = get<2>(test_tuple);
 
-        vector<int> cover = PQM(table, num_of_function_tested, num_of_pattern);
-        for (int i=0; i<cover.size(); i++){
-            vector<int> signs;
+        if (i == 0){
+            cout << num_of_columns << endl;
+        }
 
-            // calc signs
-            int index = cover[i];
-            cout << index << endl;
-            for (int j=0; j<num_of_function_terms; j++){
-                int sign = (index % 3) - 1;
-                signs.push_back(sign);
-                index /= 3;
-            }
+        vector<int> cover = PQM(table, num_of_columns, num_of_pattern);
+        for (int j=0; j<cover.size(); j++){
+            vector<int> signs = column_signs[cover[j]];
 
             // debug
             for (int sign: signs){
@@ -169,7 +167,6 @@ int main()
             }
             cout << endl;
         }
-        cout << endl;
     }
 
     // graphReduction(found, circ_inputs, circ_outputs, inputs_operand_bit);
