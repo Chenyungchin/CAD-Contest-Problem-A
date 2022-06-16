@@ -42,7 +42,7 @@ tuple<int, vector<string>> split_ports(string str)
     return make_tuple(num_of_bits, ports);
 }
 
-tuple<map<string, Gate *>, map<string, Gate *>, int> read_file(string file, string *module_name, map<string, int> *module_inputs, map<string, int> *module_outputs)
+tuple<vector<tuple<string, Gate *>>, vector<tuple<string, Gate *>>, int> read_file(string file, string *module_name, vector<tuple<string, int>> *module_inputs, vector<tuple<string, int>> *module_outputs)
 {
     string str;
     ifstream ifs(file, ifstream::in);
@@ -90,7 +90,8 @@ tuple<map<string, Gate *>, map<string, Gate *>, int> read_file(string file, stri
                     getline(ss2, port, ',');
                     port.erase(remove(port.begin(), port.end(), ' '), port.end());
                     port.erase(remove(port.begin(), port.end(), ';'), port.end());
-                    (*module_inputs)[port] = input_bits;
+                    // (*module_inputs)[port] = input_bits;
+                    (*module_inputs).push_back(make_tuple(port, input_bits));
                 }
             }
             // ========== finding outputs ==============
@@ -117,7 +118,8 @@ tuple<map<string, Gate *>, map<string, Gate *>, int> read_file(string file, stri
                     getline(ss2, port, ',');
                     port.erase(remove(port.begin(), port.end(), ' '), port.end());
                     port.erase(remove(port.begin(), port.end(), ';'), port.end());
-                    (*module_outputs)[port] = output_bits;
+                    // (*module_outputs)[port] = output_bits;
+                    (*module_outputs).push_back(make_tuple(port, output_bits));
                 }
             }
             // =========== finding gates ==============
@@ -150,25 +152,30 @@ tuple<map<string, Gate *>, map<string, Gate *>, int> read_file(string file, stri
     }
     ifs.close();
 
-    map<string, Gate *> primary_inputs;
-    map<string, Gate *> primary_outputs;
+    vector<tuple<string, Gate *>> primary_inputs;
+    vector<tuple<string, Gate *>> primary_outputs;
     // ======== initialize primary inputs and outputs ==========
     // inputs
     for (auto inp : (*module_inputs))
     {
-        int inp_bits = inp.second;
+        // int inp_bits = inp.second;
+        int inp_bits = get<1>(inp);
         if (inp_bits == 1){
-            string tmp = inp.first;
+            // string tmp = inp.first;
+            string tmp = get<0>(inp);
             Gate* newGate = new Gate;
             newGate->gate_name = tmp;
-            primary_inputs[tmp] = newGate;
+            // primary_inputs[tmp] = newGate;
+            primary_inputs.push_back(make_tuple(tmp, newGate));
         }
         else{
             for (int i = 0; i < inp_bits; i++){
-                string tmp = inp.first + "[" + to_string(i) + "]";
+                // string tmp = inp.first + "[" + to_string(i) + "]";
+                string tmp = get<0>(inp) + "[" + to_string(i) + "]";
                 Gate* newGate = new Gate;
                 newGate->gate_name = tmp;
-                primary_inputs[tmp] = newGate;
+                // primary_inputs[tmp] = newGate;
+                primary_inputs.push_back(make_tuple(tmp, newGate));
             }
         }
     }
@@ -177,26 +184,33 @@ tuple<map<string, Gate *>, map<string, Gate *>, int> read_file(string file, stri
     const_0_gate->value = 0;
     Gate* const_1_gate = new Gate("1'b1");
     const_1_gate->value = 1;
-    primary_inputs["1'b0"] = const_0_gate;
-    primary_inputs["1'b1"] = const_1_gate;
+    // primary_inputs["1'b0"] = const_0_gate;
+    // primary_inputs["1'b1"] = const_1_gate;
+    primary_inputs.push_back(make_tuple("1'b0", const_0_gate));
+    primary_inputs.push_back(make_tuple("1'b1", const_1_gate));
+
 
     // outputs
     for (auto outp : (*module_outputs))
     {
-        int outp_bits = outp.second;
+        // int outp_bits = outp.second;
+        int outp_bits = get<1>(outp);
         // cout << outp.first << endl;
         if (outp_bits == 1){
-            string tmp = outp.first;
+            // string tmp = outp.first;
+            string tmp = get<0>(outp);
             Gate* newGate = new Gate;
             newGate->gate_name = tmp;
-            primary_outputs[tmp] = newGate;
+            // primary_outputs[tmp] = newGate;
+            primary_outputs.push_back(make_tuple(tmp, newGate));
         }
         else{
             for (int i = 0; i < outp_bits; i++){
-                string tmp = outp.first + "[" + to_string(i) + "]";
+                string tmp = get<0>(outp) + "[" + to_string(i) + "]";
                 Gate* newGate = new Gate;
                 newGate->gate_name = tmp;
-                primary_outputs[tmp] = newGate;
+                // primary_outputs[tmp] = newGate;
+                primary_outputs.push_back(make_tuple(tmp, newGate));
             }
         }
     }
@@ -229,10 +243,12 @@ tuple<map<string, Gate *>, map<string, Gate *>, int> read_file(string file, stri
         }
         else
         { // find in primary inputs
-            auto tmp2 = primary_inputs.find(wire_name);
+            // auto tmp2 = primary_inputs.find(wire_name);
+            auto tmp2 = find_if(primary_inputs.begin(), primary_inputs.end(), [&wire_name](auto x) { return get<0>(x) == wire_name; });
             if (tmp2 != primary_inputs.end())
             {
-                Gate *departed_gate = tmp2->second;
+                // Gate *departed_gate = tmp2->second;
+                Gate *departed_gate = get<1>(*tmp2);
                 arrived_gate->inputs.push_back(make_tuple(departed_gate, 0));
                 if (departed_gate->num_of_outputs() == 0) 
                 {
@@ -253,8 +269,10 @@ tuple<map<string, Gate *>, map<string, Gate *>, int> read_file(string file, stri
     // connect primary outputs
     for (auto wire_map : primary_outputs)
     {
-        string wire_name = wire_map.first;
-        Gate *arrived_gate = wire_map.second;
+        // string wire_name = wire_map.first;
+        // Gate *arrived_gate = wire_map.second;
+        string wire_name = get<0>(wire_map);
+        Gate *arrived_gate = get<1>(wire_map);
         // find in output map
         auto tmp = find_if(output_map.begin(), output_map.end(), [&wire_name](auto x) { return x.first == wire_name; });
         if (tmp != output_map.end())
@@ -275,10 +293,12 @@ tuple<map<string, Gate *>, map<string, Gate *>, int> read_file(string file, stri
         }
         else
         { // find in primary inputs
-            auto tmp2 = primary_inputs.find(wire_name);
+            // auto tmp2 = primary_inputs.find(wire_name);
+            auto tmp2 = find_if(primary_inputs.begin(), primary_inputs.end(), [&wire_name](auto x) { return get<0>(x) == wire_name; });
             if (tmp2 != primary_inputs.end())
             {
-                Gate *departed_gate = tmp2->second;
+                // Gate *departed_gate = tmp2->second;
+                Gate *departed_gate = get<1>(*tmp2);
                 arrived_gate->inputs.push_back(make_tuple(departed_gate, 0));
                 // vector<tuple<Gate*, int>> output_connects {make_tuple(arrived_gate, 0)};
                 // departed_gate->outputs.push_back(output_connects);

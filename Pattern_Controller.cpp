@@ -3,11 +3,11 @@
 
 using namespace std;
 
-vector<int> pattern_generator(int pattern, int bit){
+vector<int> pattern_generator(vector<int> inputs_operand_bits){
     vector<int> pattern_vec;
-    for (int i=0; i<bit; i++){
-        pattern_vec.push_back(pattern % 2);
-        pattern /= 2;
+    for (auto bit: inputs_operand_bits){
+        int random_num = rand() % int(pow(2, bit));
+        pattern_vec.push_back(random_num);
     }
     return pattern_vec;
 }
@@ -23,16 +23,15 @@ bool** pattern_controller(vector<Gate*> primary_inputs, vector<Gate*> primary_ou
     int pattern_len = primary_inputs.size() - 2; // constant 0, 1 do not need pattern
 
     
-    // int num_of_inputs = inputs_operand_bit.size();
-    // int num_of_function_tested = pow(2, num_of_inputs) * pow(2, 3);
+    // get constant
+    int constant_term = get_constant(primary_inputs, primary_outputs, inputs_operand_bit);
+    cout << "constant term: " << constant_term << endl;
 
     for (int i=0; i<num_of_pattern; i++){
-        int random_number = rand();
-        int max_pattern_val = pow(2, pattern_len);
-        vector<int> pattern = pattern_generator(random_number % max_pattern_val, pattern_len);
-        bool* tmp = compare_pattern(pattern, primary_inputs, primary_outputs, inputs_operand_bit);
+        vector<int> pattern = pattern_generator(inputs_operand_bit);
+        bool* tmp = compare_pattern(pattern, primary_inputs, primary_outputs, inputs_operand_bit, constant_term);
         bool_table[i] = tmp;
-        cout << i << endl;
+        cout << "iteration " << i << endl;
     }
 
 

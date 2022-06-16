@@ -3,3 +3,4 @@
 
 // tuple<vector<bool>, vector<Gate*>, vector<Gate*>> pattern_controller(vector<Gate*>, vector<Gate*>, vector<int>);
 bool** pattern_controller(vector<Gate*>, vector<Gate*>, vector<int>, int);
+vector<int> pattern_generator(vector<int>);

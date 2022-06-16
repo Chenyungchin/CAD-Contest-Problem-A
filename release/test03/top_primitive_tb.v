@@ -4,7 +4,10 @@
 module tb;
 
 reg clk = 0;
+<<<<<<< HEAD
 reg out2;
+=======
+>>>>>>> 8eb8a6350aefddf1c78b17d76250d0494d0e485e
 
 initial begin
     $dumpfile("dao.vcd");
@@ -35,7 +38,6 @@ initial begin
                 in2 <= j;
                 in3 <= k;
                 @(posedge clk);
-                out2 <= out1 == in1+in2+in3+102;
             end
         end
     end
