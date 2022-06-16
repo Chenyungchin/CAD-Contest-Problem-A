@@ -7,7 +7,7 @@ bool complete_cover(vector<bool> cover) {
 }
 
 
-vector<int> PQM(bool** table, int num_of_minterm, int num_of_pattern) {
+vector<int> PQM(bool** table, int num_of_minterm, int num_of_pattern, vector<int>* column_signs) {
     // find dominance minterm
     int num_of_1;
     vector<int> dominance; // list of index of dominance minterms
@@ -17,13 +17,14 @@ vector<int> PQM(bool** table, int num_of_minterm, int num_of_pattern) {
     for (int j=0; j<num_of_minterm; j++) {
         // sign
         vector<int> signs;
-        int index = j;
-        // cout << index << endl;
-        for (int k=0; k<round(log(num_of_minterm)/log(3)); k++){
-            int sign = (index % 3) - 1;
-            signs.push_back(sign);
-            index /= 3;
-        }
+        // int index = j;
+        // // cout << index << endl;
+        // for (int k=0; k<round(log(num_of_minterm)/log(3)); k++){
+        //     int sign = (index % 3) - 1;
+        //     signs.push_back(sign);
+        //     index /= 3;
+        // }
+        signs = column_signs[j];
         int distance = count(signs.begin(), signs.end(), 0);
         minterm_distance.push_back(distance);
         // debug
@@ -87,7 +88,7 @@ vector<int> PQM(bool** table, int num_of_minterm, int num_of_pattern) {
     vector<int> empty;
     while (!complete_cover(cover)) {
         int largest_minterm = minterm_size[0].first;
-        // cout << largest_minterm << " size: " << minterm_size[0].second << endl;
+        cout << largest_minterm << " size: " << minterm_size[0].second << endl;
         minterm_size.erase(minterm_size.begin());
         for (int i=0; i<num_of_pattern; i++) {
             if (table[i][largest_minterm]) cover[i] = true;

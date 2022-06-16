@@ -5,6 +5,6 @@
 #include "graph.h"
 #include <array>
 
-tuple<vector<Gate *>, vector<Gate *>> findSubgraph(vector<int> input_name, map<string, Gate *> primary_inputs, map<string, Gate *> primary_outputs);
+vector<Gate *> findSubgraph(vector<Gate *> input_gate, vector<tuple<string, Gate *>> primary_inputs, vector<tuple<string, Gate *>> primary_outputs);
 
 #endif 

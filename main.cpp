@@ -11,6 +11,7 @@
 #include "evaluate.h"
 #include "PQM.h"
 #include "SubCircuitEC.h"
+#include "findSubgraph.h"
 
 int main()
 {
@@ -67,7 +68,6 @@ int main()
     
     deleteBuf(primary_inputs, primary_outputs);
     deleteNot(primary_inputs, primary_outputs);
-
     
     vector<Gate*> inputs;
     vector<vector<Gate*>> outputs;
@@ -115,6 +115,16 @@ int main()
     //     cout << endl;
     // }
 
+    // find subgraph
+    vector<Gate *> subgraph;
+    vector<Gate *> input_gate = {get<1>(primary_inputs[0]), get<1>(primary_inputs[49])};
+    subgraph = findSubgraph(input_gate, primary_inputs, primary_outputs);
+    // cout << "subgraph: ";
+    // for (auto g : subgraph) {
+    //     cout << g->gate_name << " ";
+    // }
+    // cout << endl;
+
     vector<int> inputs_operand_bit;
 
     for (auto inp: module_inputs){
@@ -159,7 +169,7 @@ int main()
         //     cout << endl;
         // }
 
-        vector<int> cover = PQM(table, num_of_columns, num_of_pattern);
+        vector<int> cover = PQM(table, num_of_columns, num_of_pattern, column_signs);
         for (int j=0; j<cover.size(); j++){
             vector<int> signs = column_signs[cover[j]];
 
