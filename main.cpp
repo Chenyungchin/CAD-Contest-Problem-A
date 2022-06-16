@@ -14,7 +14,7 @@
 int main()
 {
     // string file_path = "full_adder.v";
-    string file_path = "release/test03/top_primitive.v";
+    string file_path = "release/test10/top_primitive.v";
     
     string file_out_path = "out2.v";
     string module_name;
@@ -68,15 +68,34 @@ int main()
     deleteNot(primary_inputs, primary_outputs);
 
     
-    vector<Gate*> inputs, outputs;
+    vector<Gate*> inputs;
+    vector<vector<Gate*>> outputs;
     for (auto inp: primary_inputs){
         // inputs.push_back(inp.second);
         inputs.push_back(get<1>(inp));
     }
-    for (auto oup: primary_outputs){
-        // outputs.push_back(oup.second);
-        outputs.push_back(get<1>(oup));
+    
+    int node_cnt = 0;
+    // cout << "module output " << module_outputs.size() << endl;
+    for (int i=0; i<module_outputs.size(); i++){
+        int word_len = get<1>(module_outputs[i]);
+        vector<Gate*> output;
+        for (int j=0; j<word_len;j++){
+            output.push_back(get<1>(primary_outputs[node_cnt+j]));
+        }
+        outputs.push_back(output);
+        node_cnt += word_len;
+        // cout << "len: " << outputs.size() << endl;
     }
+
+    // cout << outputs.size() << " " << outputs[0].size() << endl;
+
+    // for (int i=0; i<outputs.size(); i++){
+    //     for (int j=0; j<outputs[i].size(); j++){
+    //         cout << outputs[i][j]->gate_name << " ";
+    //     }
+    //     cout << endl;
+    // }
 
 
     vector<int> inputs_operand_bit;
@@ -89,7 +108,6 @@ int main()
 
     int num_of_pattern = 10;
     // cout << "dao" << endl;
-    auto table = pattern_controller(inputs, outputs, inputs_operand_bit, num_of_pattern);
     // cout << "dao2" << endl;
     
     int num_of_inputs = inputs_operand_bit.size();
@@ -112,27 +130,30 @@ int main()
     //     }
     //     cout << endl;
     // }
+    for (int i=0; i<outputs.size(); i++){
+        auto table = pattern_controller(inputs, outputs[i], inputs_operand_bit, num_of_pattern);
 
-    vector<int> cover = PQM(table, num_of_function_tested, num_of_pattern);
-    for (int i=0; i<cover.size(); i++){
-        vector<int> signs;
+        vector<int> cover = PQM(table, num_of_function_tested, num_of_pattern);
+        for (int i=0; i<cover.size(); i++){
+            vector<int> signs;
 
-        // calc signs
-        int index = cover[i];
-        // cout << index << endl;
-        for (int j=0; j<num_of_function_terms; j++){
-            int sign = (index % 3) - 1;
-            signs.push_back(sign);
-            index /= 3;
-        }
+            // calc signs
+            int index = cover[i];
+            // cout << index << endl;
+            for (int j=0; j<num_of_function_terms; j++){
+                int sign = (index % 3) - 1;
+                signs.push_back(sign);
+                index /= 3;
+            }
 
-        // debug
-        for (int sign: signs){
-            cout << sign << " ";
+            // debug
+            for (int sign: signs){
+                cout << sign << " ";
+            }
+            cout << endl;
         }
         cout << endl;
     }
-    cout << endl;
 
     // graphReduction(found, circ_inputs, circ_outputs, inputs_operand_bit);
     bool write_complete = write_file(file_out_path, module_name, module_inputs, module_outputs, primary_inputs);

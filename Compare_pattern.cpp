@@ -18,18 +18,21 @@ int get_constant(vector<Gate*> inputs, vector<Gate*> outputs, vector<int> inputs
     }
 
     // calc gate value by top down DP from output
-    int output_circuit = 0;
-    int bit = 0;
-    for (auto outp: outputs){
+    unsigned int output_circuit = 0;
+    // int bit = 0;
+    for (int i=0; i<outputs.size(); i++){
+        auto outp = outputs[i];
         string port_name = outp->gate_name;
-        cout << port_name << " ";
+        // cout << port_name << " ";
         // int bit = stoi(port_name.substr(port_name.find('[') + 1, port_name.find(']') - port_name.find('[') - 1));
         int gate_val = get_gate_value(outp);
-
-        output_circuit += gate_val * pow(2, bit);
-        bit ++;
+        // cout << gate_val << " ";
+        
+        output_circuit += gate_val * pow(2, i);
+        // cout << "iteration " << i << " : " <<  output_circuit << endl;
+        // bit ++;
     }
-    cout << endl;
+    // cout << endl;
     
     cout << output_circuit << endl;
 
@@ -197,11 +200,8 @@ bool* compare_pattern(vector<int> pattern_vec, vector<Gate*> inputs, vector<Gate
         bool_row[i] = (output_circuit == (func_val % mod_num));
 
         // int bias = 29524;
-        // if (i == bias + 13){
+        // if (i == bias + 36){
         //     cout << "==============" << i << "=============" << endl;
-        //     for (int j=0; j<pattern.size(); j++){
-        //         cout << pattern[j] << " ";
-        //     }
         //     cout << endl;
         //     cout << output_circuit << " " << (func_val % mod_num) << endl;
         // }
