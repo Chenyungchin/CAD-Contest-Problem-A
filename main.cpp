@@ -15,7 +15,7 @@
 int main()
 {
     // string file_path = "full_adder.v";
-    string file_path = "release/test07/top_primitive.v";
+    string file_path = "release/test11/top_primitive.v";
     
     string file_out_path = "out2.v";
     string module_name;
@@ -123,21 +123,19 @@ int main()
 
     // for (int i=0; i<inputs_operand_bit.size(); i++) cout << inputs_operand_bit[i] << " ";
 
-    int num_of_pattern = 100;
+    int num_of_pattern = 10;
     // cout << "dao" << endl;
     // cout << "dao2" << endl;
     
-    int num_of_inputs = inputs_operand_bit.size();
+    // int num_of_inputs = inputs_operand_bit.size();
 
-    int num_of_function_terms = (num_of_inputs == 2) ? 5 :
-                                (num_of_inputs == 3) ? 10 : 
-                                (num_of_inputs == 4) ? 10 : num_of_inputs;
-    int num_of_function_tested = pow(3, num_of_function_terms);
+    // int num_of_function_terms = (num_of_inputs == 2) ? 5 :
+    //                             (num_of_inputs == 3) ? 10 : 
+    //                             (num_of_inputs == 4) ? 10 : num_of_inputs;
+    // int num_of_function_tested = pow(3, num_of_function_terms);
 
 
-    // debug
-    int bias = 0;
-    for (int i=0; i<num_of_function_terms; i++) bias += pow(3, i);
+
     // cout << bias << endl;
 
 
@@ -148,14 +146,18 @@ int main()
     //     cout << endl;
     // }
     for (int i=0; i<outputs.size(); i++){
+        // if (i != 1) continue;
         auto test_tuple = pattern_controller(inputs, outputs[i], inputs_operand_bit, num_of_pattern);
         bool** table = get<0>(test_tuple);
         vector<int>* column_signs = get<1>(test_tuple);
         int num_of_columns = get<2>(test_tuple);
 
-        if (i == 0){
-            cout << num_of_columns << endl;
-        }
+        // debug
+        // if (i == 1){
+        //     cout << num_of_columns << endl;
+        //     for (auto sign: column_signs[126]) cout << sign << " ";
+        //     cout << endl;
+        // }
 
         vector<int> cover = PQM(table, num_of_columns, num_of_pattern);
         for (int j=0; j<cover.size(); j++){

@@ -5,7 +5,7 @@
 
 using namespace std;
 
-int get_constant(vector<Gate*> inputs, vector<Gate*> outputs, vector<int> inputs_operand_bit){
+long long int get_constant(vector<Gate*> inputs, vector<Gate*> outputs, vector<int> inputs_operand_bit){
     // stream in the given pattern
     int const_gate = 0;
     for (int i=0; i<inputs.size(); i++){
@@ -18,7 +18,7 @@ int get_constant(vector<Gate*> inputs, vector<Gate*> outputs, vector<int> inputs
     }
 
     // calc gate value by top down DP from output
-    unsigned int output_circuit = 0;
+    long long int output_circuit = 0;
     // int bit = 0;
     for (int i=0; i<outputs.size(); i++){
         auto outp = outputs[i];
@@ -45,7 +45,7 @@ int get_constant(vector<Gate*> inputs, vector<Gate*> outputs, vector<int> inputs
 }
 
 
-tuple<bool*, vector<int>*, int> compare_pattern(vector<int> pattern_vec, vector<Gate*> inputs, vector<Gate*> outputs, vector<int> inputs_operand_bit, int constant_term){
+tuple<bool*, vector<int>*, int> compare_pattern(vector<int> pattern_vec, vector<Gate*> inputs, vector<Gate*> outputs, vector<int> inputs_operand_bit, long long int constant_term){
     // ==== traversing the graph to get output ====
     // stream in the given pattern
     // int const_gate = 0;
@@ -73,7 +73,7 @@ tuple<bool*, vector<int>*, int> compare_pattern(vector<int> pattern_vec, vector<
 
 
     // calc gate value by top down DP from output
-    int output_circuit = 0;
+    long long int output_circuit = 0;
     int bit = 0;
     for (auto outp: outputs){
         string port_name = outp->gate_name;
@@ -134,7 +134,7 @@ tuple<bool*, vector<int>*, int> compare_pattern(vector<int> pattern_vec, vector<
 
     int num_of_inputs = inputs_operand_bit.size();
 
-    auto func_tuple = simulated_function(pattern_vec, output_circuit, num_of_inputs, outputs.size(), constant_term, 5);
+    auto func_tuple = simulated_function(pattern_vec, output_circuit, num_of_inputs, outputs.size(), constant_term, 4);
     // bool* bool_row = get<0>(func_tuple);
     // vector<int>* column_signs = get<1>(func_tuple);
     // int num_of_columns = get<2>(func_tuple);
@@ -223,14 +223,13 @@ tuple<bool*, vector<int>*, int> compare_pattern(vector<int> pattern_vec, vector<
     // return bool_row;
 }
 
-tuple<bool*, vector<int>*, int> simulated_function(vector<int> words, int output_circuit, int num_of_inputs, int num_of_output_bit, int constant_term, int max_nonzero_term=5){
+tuple<bool*, vector<int>*, int> simulated_function(vector<int> words, long long int output_circuit, int num_of_inputs, int num_of_output_bit, long long int constant_term, int max_nonzero_term=5){
     int MAX_NUM_OF_COLUMN = pow(3, 10);
-    vector<int> term_vals;
-    
+    vector<long long int> term_vals;
     if (num_of_inputs == 2){
         int a = words[0];
         int b = words[1];
-        int tmp[] = {a, b, a*b, a*a, b*b};
+        long long int tmp[] = {a, b, a*b, a*a, b*b, a*a*a, b*b*b};
         for (auto term: tmp){
             term_vals.push_back(term);
         }
@@ -239,7 +238,7 @@ tuple<bool*, vector<int>*, int> simulated_function(vector<int> words, int output
         int a = words[0];
         int b = words[1];
         int c = words[2];
-        int tmp[] = {a, b, c, a*b, b*c, c*a, a*a, b*b, c*c, a*b*c};
+        long long int tmp[] = {a, b, c, a*b, b*c, c*a, a*a, b*b, c*c, a*b*c, a*a*a, b*b*b, c*c*c};
         for (auto term: tmp){
             term_vals.push_back(term);
         }
@@ -249,7 +248,19 @@ tuple<bool*, vector<int>*, int> simulated_function(vector<int> words, int output
         int b = words[1];
         int c = words[2];
         int d = words[3];
-        int tmp[] = {a, b, c, d, a*b, a*c, a*d, b*c, b*d, c*d};
+        long long int tmp[] = {a, b, c, d, a*b, a*c, a*d, b*c, b*d, c*d};
+        for (auto term: tmp){
+            term_vals.push_back(term);
+        }
+    }
+    else if(num_of_inputs == 5){
+        int a = words[0];
+        int b = words[1];
+        int c = words[2];
+        int d = words[3];
+        int e = words[4];
+        // long long int tmp[] = {a, b, c, d, e, a*b, a*c, a*d, a*e, b*c, b*d, b*e};
+        long long int tmp[] = {a, b, c, d, e, a*b, a*c, a*d, a*e, b*c, b*d, b*e, c*d, c*e, d*e};
         for (auto term: tmp){
             term_vals.push_back(term);
         }
@@ -259,24 +270,24 @@ tuple<bool*, vector<int>*, int> simulated_function(vector<int> words, int output
             term_vals.push_back(word);
         }
     }
-
+    // cout << "hi1" << endl;
     int num_of_function_terms = term_vals.size();
 
 
     bool* bool_row = new bool[MAX_NUM_OF_COLUMN];
-    int mod_num = pow(2, (num_of_output_bit));
+    long long int mod_num = pow(2, (num_of_output_bit));
     // cout << mod_num << endl;
     
-    int num_of_function_tested = pow(3, num_of_function_terms);
+    long long int num_of_function_tested = pow(3, num_of_function_terms);
+    // cout << "this much: " << num_of_function_tested << endl;
     int table_column_id = 0;
     vector<int>* column_signs = new vector<int>[MAX_NUM_OF_COLUMN];
-    
 
-    for (int i=0; i<num_of_function_tested; i++){
+    for (long long int i=0; i<num_of_function_tested; i++){
+        // if (i % 1000000 == 0) cout << i << endl;
         vector<int> signs;
-
         // calc signs
-        int index = i;
+        long long int index = i;
         for (int j=0; j<num_of_function_terms; j++){
             int sign = (index % 3) - 1;
             signs.push_back(sign);
@@ -290,15 +301,26 @@ tuple<bool*, vector<int>*, int> simulated_function(vector<int> words, int output
         }
 
         // calc function values
-        int func_val = constant_term;
+        long long int func_val = constant_term;
         for (int j=0; j<num_of_function_terms; j++){
             func_val += term_vals[j] * signs[j];
         }
 
+        // if (i > 7000000) cout << "hi3" << endl;
+
         // check equivalence
-        bool_row[table_column_id] = (output_circuit == (func_val % mod_num));
+        long long int func_val_mod = func_val % mod_num;
+        if (func_val_mod < 0) func_val_mod += mod_num;
+        // if (i > 7000000) cout << "hi5" << endl;
+        bool_row[table_column_id] = (output_circuit == func_val_mod);
+        // if (i > 7000000) cout << "hi6" << endl;
+        // if (table_column_id == 126){
+        //     cout << output_circuit << " " << func_val_mod << " ============" << endl;
+        // }
         column_signs[table_column_id] = signs;
+        // if (i > 7000000) cout << "hi7" << endl;
         table_column_id ++;
+        // if (i > 7000000) cout << "hi4" << endl;
 
         // int bias = 29524; // for num_of_inputs == 10
         // if (i == bias){

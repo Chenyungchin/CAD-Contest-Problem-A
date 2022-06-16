@@ -24,15 +24,18 @@ tuple<bool**, vector<int>*, int> pattern_controller(vector<Gate*> primary_inputs
 
     
     // get constant
-    int constant_term = get_constant(primary_inputs, primary_outputs, inputs_operand_bit);
+    long long int constant_term = get_constant(primary_inputs, primary_outputs, inputs_operand_bit);
     cout << "constant term: " << constant_term << endl;
 
     vector<int>* column_signs;
     int num_of_columns;
+    int num_of_function_terms;
 
     for (int i=0; i<num_of_pattern; i++){
         vector<int> pattern = pattern_generator(inputs_operand_bit);
+        // cout << "daodao" << endl;
         auto func_tuple = compare_pattern(pattern, primary_inputs, primary_outputs, inputs_operand_bit, constant_term);
+        // cout << "dao1dao" << endl;
         bool* bool_row = get<0>(func_tuple);
         column_signs = get<1>(func_tuple);
         num_of_columns = get<2>(func_tuple);
