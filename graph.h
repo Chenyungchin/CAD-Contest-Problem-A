@@ -16,6 +16,7 @@ public:
     vector<string> transitive_fanin;
     vector<string> in_wire_idx;
     vector<string> out_wire_idx; // Can be a number (of wire) or a output wire name
+    vector<int> signs;
     int num_of_inputs(){
         return inputs.size();
     };

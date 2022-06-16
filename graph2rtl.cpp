@@ -75,12 +75,38 @@ bool write_file(string file, string module_name, vector<tuple<string, int>> modu
             }
         }
     }
+    vector<long long int> term_vals;
+    vector<vector<int>> func;
+    if (module_inputs.size() == 2){
+        // long long int tmp[] = {a, b, a*b, a*a, b*b, a*a*a, b*b*b};
+        func = {{0}, {1}, {0, 1}, {0, 0}, {1, 1}, {0, 0, 0}, {1, 1, 1}};
+    }
+    else if (module_inputs.size() == 3){
+        // long long int tmp[] = {a, b, c, a*b, b*c, c*a, a*a, b*b, c*c, a*b*c, a*a*a, b*b*b, c*c*c};
+        func = {{0}, {1}, {2}, {0, 1}, {1, 2}, {0, 2}, {0, 0}, {1, 1}, {2, 2}, {0, 1, 2}, {0, 0, 0}, {1, 1, 1}, {2, 2, 2}};
+    }
+    else if (module_inputs.size() == 4){
+        // long long int tmp[] = {a, b, c, d, a*b, a*c, a*d, b*c, b*d, c*d};
+        func = {{0}, {1}, {2}, {3}, {0, 1}, {0, 2}, {0, 3}, {1, 2}, {1, 3}, {2, 3}};
+    }
+    else if(module_inputs.size() == 5){
+        // long long int tmp[] = {a, b, c, d, e, a*b, a*c, a*d, a*e, b*c, b*d, b*e, c*d, c*e, d*e};
+        func = {{0}, {1}, {2}, {3}, {4}, {0, 1}, {0, 2}, {0, 3}, {0, 4}, {1, 2}, {1, 3}, {1, 4}, {2, 3}, {2, 4}, {3, 4}};
+    }
+    else{
+        for (int i=0; i<module_inputs.size(); i++) {
+            vector<int> tmp = {i};
+            func.push_back(tmp);
+        }
+    }
+
 
     int wire_count = 0;
     while (!gate_queue.empty()) {
         Gate* g = gate_queue.front();
         gate_queue.pop();
 
+        cout << g->gate_name << endl;
         // cout << wire_count << endl;
         // cout << g->gate_name;
         // for (int i=0; i<g->num_of_inputs(); i++) {
@@ -94,65 +120,86 @@ bool write_file(string file, string module_name, vector<tuple<string, int>> modu
             gate_count ++;
         }
         string name = g->gate_name;
-        vector<pair<string, string>>::iterator op_pair = find_if(Gate_pair.begin(), Gate_pair.end(), [&name](pair<string, string> p){return p.first == name;});
-        string op = (*op_pair).second;
+        vector<pair<string, string>>::iterator op_pair;
+        string op;
+        if (g->gate_name != "func") {
+            op_pair = find_if(Gate_pair.begin(), Gate_pair.end(), [&name](pair<string, string> p){return p.first == name;});
+            op = (*op_pair).second;
+        }
 
         
         f << "assign " ;
         // TODO: a gate with many outputs
-        if (g->outputs.size() > 1) f << "{";
-        int output_count = 0;
-        for (auto output : g->outputs) {
-            output_count ++;
-            if (output_count > 1) f << " , ";
-            bool in_output_list = false; // Check if there's a fanout is primary output
-            int primary_output_fanout_idx;
-            for (int i=0; i<output.size(); i++) {
-                if (find(output_list.begin(), output_list.end(), get<0>(output[i])->gate_name) != output_list.end()) {
-                    in_output_list = true;
-                    primary_output_fanout_idx = i;
-                }
-                else {
-                    get<0>(output[i])->traversal ++;
-                }
-                if (get<0>(output[i])->traversal == get<0>(output[i])->num_of_inputs()) {
-                    gate_queue.push(get<0>(output[i]));
-                }
-            }
-            if (in_output_list) {
-                f << get<0>(output[primary_output_fanout_idx])->gate_name;
-                g->out_wire_idx.push_back(get<0>(output[primary_output_fanout_idx])->gate_name);
-                for (int i=0; i<output.size(); i++) {
-                    get<0>(output[i])->in_wire_idx.push_back(get<0>(output[primary_output_fanout_idx])->gate_name);
-                }
-            }
-            else {
-                f << "w" << wire_count;
-                g->out_wire_idx.push_back(to_string(wire_count));
-                for (int i=0; i<output.size(); i++) {
-                    get<0>(output[i])->in_wire_idx.push_back(to_string(wire_count));
-                }
-                wire_count ++;
-            }
-        }
-        if (g->outputs.size() > 1) f << "} = ";
-        else f << " = ";
+        // if (g->outputs.size() > 1) f << "{";
+        // int output_count = 0;
+        // for (auto output : g->outputs) {
+            // output_count ++;
+            // if (output_count > 1) f << " , ";
+            // bool in_output_list = false; // Check if there's a fanout is primary output
+            // int primary_output_fanout_idx;
+            // for (int i=0; i<output.size(); i++) {
+                // if (find(output_list.begin(), output_list.end(), get<0>(output[i])->gate_name) != output_list.end()) {
+                    // in_output_list = true;
+                    // primary_output_fanout_idx = i;
+                // }
+                // else {
+                    // get<0>(output[i])->traversal ++;
+                // }
+                // if (get<0>(output[i])->traversal == get<0>(output[i])->num_of_inputs()) {
+                    // gate_queue.push(get<0>(output[i]));
+                // }
+            // }
+            // if (in_output_list) {
+                // f << get<0>(output[primary_output_fanout_idx])->gate_name;
+                // g->out_wire_idx.push_back(get<0>(output[primary_output_fanout_idx])->gate_name);
+                // for (int i=0; i<output.size(); i++) {
+                    // get<0>(output[i])->in_wire_idx.push_back(get<0>(output[primary_output_fanout_idx])->gate_name);
+                // }
+            // }
+            // else {
+                // f << "w" << wire_count;
+                // g->out_wire_idx.push_back(to_string(wire_count));
+                // for (int i=0; i<output.size(); i++) {
+                    // get<0>(output[i])->in_wire_idx.push_back(to_string(wire_count));
+                // }
+                // wire_count ++;
+            // }
+        // }
+        // if (g->outputs.size() > 1) f << "} = ";
+        f << get<0>(g->outputs[0][0])->gate_name.substr(0, 4);
+        f << " = ";
         
         int tmp_count = 0;
         int input_count = 0;
-        if (g->gate_name == "++") {
-            for (auto n : g->inputs_operand_bit) {
-                f << "{";
-                for (int i=0; i<n; i++) {
-                    f << get<0>(g->inputs[input_count+i])->gate_name;
-                    if (i != n-1) f << ", ";
+        if (g->gate_name == "func") {
+            // for (auto n : g->inputs_operand_bit) {
+            //     f << "{";
+            //     for (int i=0; i<n; i++) {
+            //         f << get<0>(g->inputs[input_count+i])->gate_name;
+            //         if (i != n-1) f << ", ";
+            //     }
+            //     f << "}";
+            //     input_count += n;
+            //     if (input_count < g->num_of_inputs()) f << " + ";
+            //     else f << ";" << endl;
+            // }
+            cout << "output functions" << endl;
+            bool start = true;
+            for (int i=0; i<func.size(); i++) {
+                // cout << "this is iteration " << i <<", sign is " << g->signs[i] << endl;
+                if (g->signs[i] != 0) {
+                    if (g->signs[i] == 1 && !start) f << " + ";
+                    else if (g->signs[i] == -1) f << " - ";
+                    for (int j=0; j<func[i].size(); j++) {
+                        f << get<0>(module_inputs[func[i][j]]);
+                        if (j < func[i].size() - 1){
+                            f << " * ";
+                        }
+                    }
+                    start = false;
                 }
-                f << "}";
-                input_count += n;
-                if (input_count < g->num_of_inputs()) f << " + ";
-                else f << ";" << endl;
             }
-
+            f << ";" << endl;
         }
         else {
             for (auto input: g->inputs) {

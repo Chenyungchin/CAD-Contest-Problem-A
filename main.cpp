@@ -12,11 +12,12 @@
 #include "PQM.h"
 #include "SubCircuitEC.h"
 #include "findSubgraph.h"
+#include "find_ctrl.h"
 
 int main()
 {
     // string file_path = "full_adder.v";
-    string file_path = "release/test11/top_primitive.v";
+    string file_path = "release/test04/top_primitive.v";
     
     string file_out_path = "out2.v";
     string module_name;
@@ -134,6 +135,7 @@ int main()
     // for (int i=0; i<inputs_operand_bit.size(); i++) cout << inputs_operand_bit[i] << " ";
 
     int num_of_pattern = 10;
+    int num_of_pattern_ctrl = 100;
     cout << "dao" << endl;
     // cout << "dao2" << endl;
     
@@ -182,12 +184,16 @@ int main()
             }
             cout << endl;
         }
-        // find_ctrl(functions, inputs, outputs[i], inputs_operand_bit, num_of_pattern)
+        if (cover.size() > 1) {
+            vector<map<string, int>> CTRL = find_ctrl(functions, inputs, outputs[i], inputs_operand_bit, num_of_pattern_ctrl);
+        }
+        else if (cover.size() == 1) {
+            graphReduction(inputs, outputs[i], inputs_operand_bit, functions[0]);
+        }
     }
 
     cout << "finish PQM" << endl;
 
-    // graphReduction(found, circ_inputs, circ_outputs, inputs_operand_bit);
     bool write_complete = write_file(file_out_path, module_name, module_inputs, module_outputs, primary_inputs);
 
     // if (write_complete = true) {

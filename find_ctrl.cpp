@@ -21,10 +21,17 @@ vector<map<string, int>> find_ctrl(vector<vector<int>> functions, vector<Gate*> 
         num_of_columns = get<2>(func_tuple);
 
         bool_table[i] = bool_row;
-        cout << "iteration " << i << endl;
+        // cout << "iteration " << i << endl;
     }
 
+    for (int i=0; i<num_of_pattern; i++) {
+        for (int j=0; j<functions.size(); j++) {
+            // cout << bool_table[i][j] << " " ;
+        }
+        cout << endl;
+    }
 
+    vector<map<string, int>> CTRL;
 
-
+    return CTRL;
 }

@@ -1,18 +1,23 @@
 #include "graphReduction.h"
 
-void graphReduction(bool found, vector<Gate*> circ_inputs, vector<Gate*> circ_outputs, vector<int> inputs_operand_bit) {
-    if (!found) return;
-
+void graphReduction(vector<Gate*> circ_inputs, vector<Gate*> circ_outputs, vector<int> inputs_operand_bit, vector<int> signs) {
+    
     int input_num = 0;
     for (auto n : inputs_operand_bit) {
         input_num += n;
     }
-    if (input_num != circ_inputs.size()) {
-        cout << "Circ_inputs wrong!";
-        return;
-    }
+    // if (input_num != circ_inputs.size()) {
+    //     cout << "Circ_inputs wrong!" << endl;
+    //     return;
+    // }
 
-    Gate *newGate = new Gate("++");
+    Gate *newGate = new Gate("func");
+    newGate->signs = signs;
+    // for (auto sign : signs) {
+    //     cout << sign << " ";
+    // }
+    // cout << endl;
+
     newGate->inputs_operand_bit = inputs_operand_bit;
     int in_gate_count = 0;
     for (auto g_in : circ_inputs) {
