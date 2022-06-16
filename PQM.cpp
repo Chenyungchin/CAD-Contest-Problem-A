@@ -70,6 +70,7 @@ vector<int> PQM(bool** table, int num_of_minterm, int num_of_pattern) {
             return empty;
             break;
         }
+        cout << minterm_size.size() << endl;
     }
 
 
