@@ -6,6 +6,63 @@ bool complete_cover(vector<bool> cover) {
     return (all_of(cover.begin(), cover.end(), [](bool b) {return b;}));
 }
 
+vector<int> get_ctrl(vector<int> cover, vector<tuple<string, int>> module_inputs, vector<int>* column_signs){
+    vector<int> ctrl;
+    // for (auto inp: module_inputs){
+    //     ctrl.push_back(get<0>(inp));
+    // }
+    int num_of_inputs = module_inputs.size();
+    for (int i=0; i<num_of_inputs; i++){
+        ctrl.push_back(i);
+    }
+    vector<vector<int>> used_input;
+
+    if (num_of_inputs == 2){
+        // long long int tmp[] = {a, b, a*b, a*a, b*b, a*a*a, b*b*b};
+        used_input = {{0}, {1}, {0, 1}, {0}, {1}, {0}, {1}};
+
+    }
+    else if (num_of_inputs == 3){
+        // long long int tmp[] = {a, b, c, a*b, b*c, c*a, a*a, b*b, c*c, a*b*c, a*a*a, b*b*b, c*c*c};
+        used_input = {{0}, {1}, {2}, {0, 1}, {1, 2}, {2, 0}, {0}, {1}, {2}, {0, 1, 2}, {0}, {1}, {2}};
+    }
+    else if (num_of_inputs == 4){
+        // long long int tmp[] = {a, b, c, d, a*b, a*c, a*d, b*c, b*d, c*d};
+        used_input = {{0}, {1}, {2}, {3}, {0, 1}, {0, 2}, {0, 3}, {1, 2}, {1, 3}, {2, 3}};
+    }
+    else if(num_of_inputs == 5){
+        // long long int tmp[] = {a, b, c, d, e, a*b, a*c, a*d, a*e, b*c, b*d, b*e};
+        // long long int tmp[] = {a, b, c, d, e, a*b, a*c, a*d, a*e, b*c, b*d, b*e, c*d, c*e, d*e};
+        used_input = {{0}, {1}, {2}, {3}, {4}, {0, 1}, {0, 2}, {0, 3}, {0, 4}, {1, 2}, {1, 3}, {1, 4}, {2, 3}, {2, 4}, {3, 4}};
+    }
+    else{
+        // for (auto word: words){
+        //     term_vals.push_back(word);
+        // }
+        for (int i=0; i<num_of_inputs; i++){
+            used_input.push_back({i});
+        }
+    }
+    
+    for (auto cov: cover){
+        vector<int> signs = column_signs[cov];
+        for (int i=0; i<signs.size(); i++){
+            if (signs[i] == 0) continue;
+            for (auto val: used_input[i]){
+                auto it = find(ctrl.begin(), ctrl.end(), val);
+                if (it != ctrl.end()){
+                    ctrl.erase(it);
+                }
+            }
+        }
+    }
+
+    for (auto val: ctrl) cout << val << " ";
+    cout << endl;
+
+    return ctrl;
+}
+
 
 vector<int> PQM(bool** table, int num_of_minterm, int num_of_pattern, vector<int>* column_signs) {
     // find dominance minterm

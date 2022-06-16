@@ -31,7 +31,7 @@ vector<map<string, int>> find_ctrl(vector<vector<int>> functions, vector<Gate*> 
         cout << endl;
     }
 
-    vector<map<string, int>> CTRL;
+    vector<map<string, int>> dao;
+    return dao;
 
-    return CTRL;
 }

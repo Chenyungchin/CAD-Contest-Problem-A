@@ -174,6 +174,9 @@ int main()
         // }
 
         vector<int> cover = PQM(table, num_of_columns, num_of_pattern, column_signs);
+        cout << "find ctrl" << endl;
+        vector<int> ctrl = get_ctrl(cover, module_inputs, column_signs);
+        cout << "print operand" << endl;
         vector<vector<int>> functions;
         for (int j=0; j<cover.size(); j++){
             vector<int> signs = column_signs[cover[j]];

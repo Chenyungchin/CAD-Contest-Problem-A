@@ -31,6 +31,7 @@ tuple<bool**, vector<int>*, int> pattern_controller(vector<Gate*> primary_inputs
 
     vector<int>* column_signs = get<0>(column_info);
     int num_of_columns = get<1>(column_info);
+    cout << "num of columns: " << num_of_columns << endl;
     // int num_of_function_terms;
 
     for (int i=0; i<num_of_pattern; i++){
