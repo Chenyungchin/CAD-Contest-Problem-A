@@ -101,13 +101,19 @@ int main()
     // construct transitive fanin
     for (auto output: outputs){
         for (auto gate: output){
-            construct_transitive_fanin(gate);
-            for (auto d: gate->transitive_fanin){
-                cout << d << " ";
-            }
-            cout << endl;
+            construct_transitive_fanin(gate, 1);
+            // for (auto d: gate->transitive_fanin){
+            //     cout << d << " ";
+            // }
+            // cout << endl;
         }
     }
+    // for (auto inp: inputs){
+    //     cout << "dao" << endl;
+    //     cout << inp->gate_name << " ";
+    //     for (auto dao: inp->transitive_fanin) cout << dao << " ";
+    //     cout << endl;
+    // }
 
     vector<int> inputs_operand_bit;
 

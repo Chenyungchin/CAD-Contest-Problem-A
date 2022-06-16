@@ -5,7 +5,7 @@
 
 using namespace std;
 
-void construct_transitive_fanin(Gate*);
+vector<string> construct_transitive_fanin(Gate*, bool);
 
 
 
