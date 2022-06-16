@@ -16,7 +16,7 @@
 int main()
 {
     // string file_path = "full_adder.v";
-    string file_path = "release/test11/top_primitive.v";
+    string file_path = "release/test07/top_primitive.v";
     
     string file_out_path = "out2.v";
     string module_name;
@@ -172,6 +172,9 @@ int main()
         // }
 
         vector<int> cover = PQM(table, num_of_columns, num_of_pattern, column_signs);
+        cout << "find ctrl" << endl;
+        vector<int> ctrl = get_ctrl(cover, module_inputs, column_signs);
+        cout << "print operand" << endl;
         for (int j=0; j<cover.size(); j++){
             vector<int> signs = column_signs[cover[j]];
 
