@@ -175,15 +175,17 @@ int main()
         cout << "find ctrl" << endl;
         vector<int> ctrl = get_ctrl(cover, module_inputs, column_signs);
         cout << "print operand" << endl;
+        vector<vector<int>> functions;
         for (int j=0; j<cover.size(); j++){
             vector<int> signs = column_signs[cover[j]];
-
+            functions.push_back(signs);
             // debug
             for (int sign: signs){
                 cout << sign << " ";
             }
             cout << endl;
         }
+        // find_ctrl(functions, inputs, outputs[i], inputs_operand_bit, num_of_pattern)
     }
 
     cout << "finish PQM" << endl;
