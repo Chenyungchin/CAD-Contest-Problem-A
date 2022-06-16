@@ -45,7 +45,7 @@ long long int get_constant(vector<Gate*> inputs, vector<Gate*> outputs, vector<i
 }
 
 
-tuple<bool*, vector<int>*, int> compare_pattern(vector<int> pattern_vec, vector<Gate*> inputs, vector<Gate*> outputs, vector<int> inputs_operand_bit, long long int constant_term){
+bool* compare_pattern(vector<int> pattern_vec, vector<Gate*> inputs, vector<Gate*> outputs, vector<int> inputs_operand_bit, long long int constant_term, vector<int>* column_signs, int num_of_columns){
     // ==== traversing the graph to get output ====
     // stream in the given pattern
     // int const_gate = 0;
@@ -134,7 +134,7 @@ tuple<bool*, vector<int>*, int> compare_pattern(vector<int> pattern_vec, vector<
 
     int num_of_inputs = inputs_operand_bit.size();
 
-    auto func_tuple = simulated_function(pattern_vec, output_circuit, num_of_inputs, outputs.size(), constant_term, 4);
+    auto func_tuple = simulated_function(pattern_vec, output_circuit, num_of_inputs, outputs.size(), constant_term, 4, column_signs, num_of_columns);
     // bool* bool_row = get<0>(func_tuple);
     // vector<int>* column_signs = get<1>(func_tuple);
     // int num_of_columns = get<2>(func_tuple);
@@ -223,7 +223,45 @@ tuple<bool*, vector<int>*, int> compare_pattern(vector<int> pattern_vec, vector<
     // return bool_row;
 }
 
-tuple<bool*, vector<int>*, int> simulated_function(vector<int> words, long long int output_circuit, int num_of_inputs, int num_of_output_bit, long long int constant_term, int max_nonzero_term=5){
+tuple<vector<int>*, int> get_column_info(int num_of_inputs, int max_nonzero_term){
+    long long int MAX_NUM_OF_COLUMN = 50000;
+    int num_of_function_terms = num_of_inputs;
+    if (num_of_inputs == 2) num_of_function_terms = 7;
+    else if (num_of_inputs == 3) num_of_function_terms = 13;
+    else if (num_of_inputs == 4) num_of_function_terms = 10;
+    else if (num_of_inputs == 5) num_of_function_terms = 15;
+
+
+    long long int num_of_function_tested = pow(3, num_of_function_terms);
+    // cout << "this much: " << num_of_function_tested << endl;
+    int table_column_id = 0;
+    vector<int>* column_signs = new vector<int>[MAX_NUM_OF_COLUMN];
+
+    for (long long int i=0; i<num_of_function_tested; i++){
+        // if (i % 1000000 == 0) cout << i << endl;
+        vector<int> signs;
+        // calc signs
+        long long int index = i;
+        for (int j=0; j<num_of_function_terms; j++){
+            int sign = (index % 3) - 1;
+            signs.push_back(sign);
+            index /= 3;
+        }
+
+        int num_of_nonzero = num_of_function_terms - count(signs.begin(), signs.end(), 0);
+        if (num_of_nonzero > max_nonzero_term){
+            // cout << "too many terms. skip!" << endl;
+            continue;
+        }
+
+        column_signs[table_column_id] = signs;
+        table_column_id ++;
+    }
+
+    return make_tuple(column_signs, table_column_id);
+}
+
+bool* simulated_function(vector<int> words, long long int output_circuit, int num_of_inputs, int num_of_output_bit, long long int constant_term, int max_nonzero_term, vector<int>* column_signs, int num_of_columns){
     int MAX_NUM_OF_COLUMN = pow(3, 10);
     vector<long long int> term_vals;
     if (num_of_inputs == 2){
@@ -278,27 +316,27 @@ tuple<bool*, vector<int>*, int> simulated_function(vector<int> words, long long 
     long long int mod_num = pow(2, (num_of_output_bit));
     // cout << mod_num << endl;
     
-    long long int num_of_function_tested = pow(3, num_of_function_terms);
+    // long long int num_of_function_tested = pow(3, num_of_function_terms);
     // cout << "this much: " << num_of_function_tested << endl;
-    int table_column_id = 0;
-    vector<int>* column_signs = new vector<int>[MAX_NUM_OF_COLUMN];
+    // int table_column_id = 0;
+    // vector<int>* column_signs = new vector<int>[MAX_NUM_OF_COLUMN];
 
-    for (long long int i=0; i<num_of_function_tested; i++){
+    for (long long int i=0; i<num_of_columns; i++){
         // if (i % 1000000 == 0) cout << i << endl;
-        vector<int> signs;
-        // calc signs
-        long long int index = i;
-        for (int j=0; j<num_of_function_terms; j++){
-            int sign = (index % 3) - 1;
-            signs.push_back(sign);
-            index /= 3;
-        }
+        vector<int> signs = column_signs[i];
+        // // calc signs
+        // long long int index = i;
+        // for (int j=0; j<num_of_function_terms; j++){
+        //     int sign = (index % 3) - 1;
+        //     signs.push_back(sign);
+        //     index /= 3;
+        // }
 
-        int num_of_nonzero = num_of_function_terms - count(signs.begin(), signs.end(), 0);
-        if (num_of_nonzero > max_nonzero_term){
-            // cout << "too many terms. skip!" << endl;
-            continue;
-        }
+        // int num_of_nonzero = num_of_function_terms - count(signs.begin(), signs.end(), 0);
+        // if (num_of_nonzero > max_nonzero_term){
+        //     // cout << "too many terms. skip!" << endl;
+        //     continue;
+        // }
 
         // calc function values
         long long int func_val = constant_term;
@@ -312,14 +350,14 @@ tuple<bool*, vector<int>*, int> simulated_function(vector<int> words, long long 
         long long int func_val_mod = func_val % mod_num;
         if (func_val_mod < 0) func_val_mod += mod_num;
         // if (i > 7000000) cout << "hi5" << endl;
-        bool_row[table_column_id] = (output_circuit == func_val_mod);
+        bool_row[i] = (output_circuit == func_val_mod);
         // if (i > 7000000) cout << "hi6" << endl;
         // if (table_column_id == 126){
         //     cout << output_circuit << " " << func_val_mod << " ============" << endl;
         // }
-        column_signs[table_column_id] = signs;
+        // column_signs[table_column_id] = signs;
         // if (i > 7000000) cout << "hi7" << endl;
-        table_column_id ++;
+        // table_column_id ++;
         // if (i > 7000000) cout << "hi4" << endl;
 
         // int bias = 29524; // for num_of_inputs == 10
@@ -334,7 +372,7 @@ tuple<bool*, vector<int>*, int> simulated_function(vector<int> words, long long 
     // for (int i=0; i<num_of_function_tested; i++) cout << bool_row[i] << " ";
     // cout << endl;
 
-    return make_tuple(bool_row, column_signs, table_column_id);
+    return bool_row;
 }
 
 
