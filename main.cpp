@@ -14,7 +14,7 @@
 int main()
 {
     // string file_path = "full_adder.v";
-    string file_path = "release/test10/top_primitive.v";
+    string file_path = "release/test07/top_primitive.v";
     
     string file_out_path = "out2.v";
     string module_name;
@@ -139,7 +139,7 @@ int main()
 
             // calc signs
             int index = cover[i];
-            // cout << index << endl;
+            cout << index << endl;
             for (int j=0; j<num_of_function_terms; j++){
                 int sign = (index % 3) - 1;
                 signs.push_back(sign);
