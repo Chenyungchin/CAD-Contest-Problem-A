@@ -50,7 +50,7 @@ vector<int> PQM(bool** table, int num_of_minterm, int num_of_pattern) {
     for (int i=0; i<num_of_minterm; i++) {
         num_of_1 = 0;
         for (int j=0; j<num_of_pattern; j++) {
-            if (table[j][i] == true) {
+            if (table[j][i]) {
                 num_of_1 ++;
             }
         }
@@ -58,6 +58,12 @@ vector<int> PQM(bool** table, int num_of_minterm, int num_of_pattern) {
             minterm_size.push_back(make_pair(i, num_of_1));
         }
     }
+
+    cout << "dominance minterm: ";
+    for (auto minterm : dominance) {
+        cout << minterm << " ";
+    }
+    cout << "\n";
 
     // initialize
     vector<bool> cover(num_of_pattern, false);
@@ -77,6 +83,7 @@ vector<int> PQM(bool** table, int num_of_minterm, int num_of_pattern) {
     vector<int> empty;
     while (!complete_cover(cover)) {
         int largest_minterm = minterm_size[0].first;
+        cout << largest_minterm << " size: " << minterm_size[0].second << endl;
         for (int i=0; i<num_of_pattern; i++) {
             if (table[i][largest_minterm]) cover[i] = true;
         }
@@ -87,6 +94,22 @@ vector<int> PQM(bool** table, int num_of_minterm, int num_of_pattern) {
             return empty;
             break;
         }
+        // cout << minterm_size.size() << endl;
+        minterm_size.clear();
+        for (int i=0; i<num_of_minterm; i++) {
+            num_of_1 = 0;
+            for (int j=0; j<num_of_pattern; j++) {
+                if (table[j][i] && !cover[j]) {
+                    num_of_1 ++;
+                }
+            }
+            if (find(dominance.begin(), dominance.end(), i) == dominance.end()){
+                minterm_size.push_back(make_pair(i, num_of_1));
+            }
+        }
+        sort(minterm_size.begin(), minterm_size.end(), [](auto &left, auto &right) {
+            return left.second > right.second;
+        });
     }
 
 
