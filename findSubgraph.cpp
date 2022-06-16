@@ -2,8 +2,9 @@
 
 using namespace std;
 
-vector<Gate *> findSubgraph(int input_num, int output_num, int least_gate, map<string, Gate *> primary_inputs, map<string, Gate *> primary_outputs) {
-    vector<Gate *> subgraph_gate;
+tuple<vector<Gate *>, vector<Gate *>> findSubgraph(vector<int> input_name, map<string, Gate *> primary_inputs, map<string, Gate *> primary_outputs) {
+    vector<Gate *> subgraph_input_gate;
+    vector<Gate *> subgraph_output_gate;
     for (auto output : primary_outputs) {
         
     }
@@ -11,5 +12,5 @@ vector<Gate *> findSubgraph(int input_num, int output_num, int least_gate, map<s
 
 
 
-    return subgraph_gate;
+    return make_tuple(subgraph_input_gate, subgraph_output_gate);
 }
