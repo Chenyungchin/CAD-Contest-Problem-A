@@ -116,9 +116,9 @@ int main()
     // }
 
     // find subgraph
-    vector<Gate *> subgraph;
-    vector<Gate *> input_gate = {get<1>(primary_inputs[0]), get<1>(primary_inputs[49])};
-    subgraph = findSubgraph(input_gate, primary_inputs, primary_outputs);
+    // vector<Gate *> subgraph;
+    // vector<Gate *> input_gate = {get<1>(primary_inputs[0]), get<1>(primary_inputs[49])};
+    // subgraph = findSubgraph(input_gate, primary_inputs, primary_outputs);
     // cout << "subgraph: ";
     // for (auto g : subgraph) {
     //     cout << g->gate_name << " ";
@@ -134,7 +134,7 @@ int main()
     // for (int i=0; i<inputs_operand_bit.size(); i++) cout << inputs_operand_bit[i] << " ";
 
     int num_of_pattern = 10;
-    // cout << "dao" << endl;
+    cout << "dao" << endl;
     // cout << "dao2" << endl;
     
     // int num_of_inputs = inputs_operand_bit.size();
@@ -157,7 +157,9 @@ int main()
     // }
     for (int i=0; i<outputs.size(); i++){
         // if (i != 1) continue;
+        cout << "start checking pattern" << endl;
         auto test_tuple = pattern_controller(inputs, outputs[i], inputs_operand_bit, num_of_pattern);
+        cout << "finish checking pattern" << endl;
         bool** table = get<0>(test_tuple);
         vector<int>* column_signs = get<1>(test_tuple);
         int num_of_columns = get<2>(test_tuple);
@@ -180,6 +182,8 @@ int main()
             cout << endl;
         }
     }
+
+    cout << "finish PQM" << endl;
 
     // graphReduction(found, circ_inputs, circ_outputs, inputs_operand_bit);
     bool write_complete = write_file(file_out_path, module_name, module_inputs, module_outputs, primary_inputs);
