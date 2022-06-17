@@ -60,7 +60,8 @@ float evaluate(string file, int gate_count)
             //cout << "element: " << element << endl;
         }
     }
-    float reduction_rate = (1 - cost / gate_count);
+    float reduction_rate = (1 - float(cost) / float(gate_count));
+    // cout << 3 / 5 << endl;
     //cout << "cost: " << cost << endl;
     return reduction_rate;
 }
