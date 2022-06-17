@@ -143,7 +143,13 @@ vector<int> PQM(bool** table, int num_of_minterm, int num_of_pattern, vector<int
     // Select the maximum minterm, if it cover some new patterns
     // until cover all patterns
     vector<int> empty;
+    int count = 0;
     while (!complete_cover(cover)) {
+        count += 1;
+        if (count > 10) {
+            cout << "I give up." << endl;
+            return empty;
+        }
         int largest_minterm = minterm_size[0].first;
         // cout << largest_minterm << " size: " << minterm_size[0].second << endl;
         minterm_size.erase(minterm_size.begin());
@@ -154,7 +160,6 @@ vector<int> PQM(bool** table, int num_of_minterm, int num_of_pattern, vector<int
         if (minterm_size.size() == 0) {
             cout << "I give up." << endl;
             return empty;
-            break;
         }
         // cout << minterm_size.size() << endl;
         minterm_size.clear();

@@ -42,6 +42,13 @@ void deleteBuf(vector<tuple<string, Gate *>> primary_inputs, vector<tuple<string
         }
         if (g->gate_name == "buf") {
             buf_count ++;
+            bool dont_delete = false;
+            for (auto out : g->outputs) {
+                if (get<0>(out[0])->gate_name.substr(0, 3) == "out") {
+                    dont_delete = true;
+                }
+            }
+            if (dont_delete) continue;
             Gate* g_in = get<0>(g->inputs[0]);
             int g_in_index = get<1>(g->inputs[0]);
             vector<vector<tuple<Gate*, int>>> g_in_outputs_new;

@@ -4,6 +4,6 @@
 #include "graph.h"
 #include <array>
 
-vector<map<string, int>> find_ctrl(vector<vector<int>> functions, vector<Gate*> primary_inputs, vector<Gate*> primary_outputs, vector<int> inputs_operand_bit, int num_of_pattern);
+vector<vector<tuple<int, int>>> find_ctrl(vector<vector<int>> functions, vector<Gate*> primary_inputs, vector<Gate*> primary_outputs, vector<int> inputs_operand_bit, int num_of_pattern, vector<int> ctrl);
 
 #endif 
