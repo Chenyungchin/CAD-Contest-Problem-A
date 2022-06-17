@@ -43,8 +43,6 @@ tuple<bool*, vector<int>*, int> compare_pattern_ctrl(vector<int> pattern_vec, ve
     auto func_tuple = simulated_function_ctrl(pattern_vec, output_circuit, num_of_inputs, outputs.size(), constant_term, functions, 4);
 
     return func_tuple;
-
-
 }
 
 tuple<bool*, vector<int>*, int> simulated_function_ctrl(vector<int> words, long long int output_circuit, int num_of_inputs, int num_of_output_bit, long long int constant_term, vector<vector<int>> functions, int max_nonzero_term=5){
@@ -117,28 +115,12 @@ tuple<bool*, vector<int>*, int> simulated_function_ctrl(vector<int> words, long 
             func_val += term_vals[j] * signs[j];
         }
 
-        // if (i > 7000000) cout << "hi3" << endl;
-
         // check equivalence
         long long int func_val_mod = func_val % mod_num;
         if (func_val_mod < 0) func_val_mod += mod_num;
-        // if (i > 7000000) cout << "hi5" << endl;
         bool_row[table_column_id] = (output_circuit == func_val_mod);
-        // if (i > 7000000) cout << "hi6" << endl;
-        // if (table_column_id == 126){
-        //     cout << output_circuit << " " << func_val_mod << " ============" << endl;
-        // }
         column_signs[table_column_id] = signs;
-        // if (i > 7000000) cout << "hi7" << endl;
         table_column_id ++;
-        // if (i > 7000000) cout << "hi4" << endl;
-
-        // int bias = 29524; // for num_of_inputs == 10
-        // if (i == bias){
-        //     cout << "==============" << i << "=============" << endl;
-        //     cout << endl;
-        //     cout << output_circuit << " " << (func_val % mod_num) << endl;
-        // }
     }
 
 
