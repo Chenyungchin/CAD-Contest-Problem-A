@@ -160,7 +160,9 @@ int main()
     //     }
     //     cout << endl;
     // }
+    bool delete_gate = true;
     for (int i=0; i<outputs.size(); i++){
+        if (i>0) delete_gate = false;
         // if (i != 1) continue;
         cout << "start checking pattern" << endl;
         auto test_tuple = pattern_controller(inputs, outputs[i], inputs_operand_bit, num_of_pattern);
@@ -192,10 +194,10 @@ int main()
             cout << endl;
         }
         if (cover.size() > 1) {
-            vector<map<string, int>> CTRL = find_ctrl(functions, inputs, outputs[i], inputs_operand_bit, num_of_pattern_ctrl);
+            vector<vector<tuple<int, int>>> CTRL = find_ctrl(functions, inputs, outputs[i], inputs_operand_bit, num_of_pattern_ctrl, ctrl);
         }
         else if (cover.size() == 1) {
-            graphReduction(inputs, outputs[i], inputs_operand_bit, functions[0]);
+            graphReduction(inputs, outputs[i], inputs_operand_bit, functions[0], constant_term, delete_gate);
         }
     }
 

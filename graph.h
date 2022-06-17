@@ -13,6 +13,7 @@ public:
     int no; 
     int traversal;
     int value;
+    int constant_term;
     vector<string> transitive_fanin;
     vector<string> in_wire_idx;
     vector<string> out_wire_idx; // Can be a number (of wire) or a output wire name

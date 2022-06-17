@@ -7,7 +7,7 @@
 
 using namespace std;
 
-void graphReduction(vector<Gate*> circ_inputs, vector<Gate*> circ_outputs, vector<int> inputs_operand_bit, vector<int> signs);
+void graphReduction(vector<Gate*> circ_inputs, vector<Gate*> circ_outputs, vector<int> inputs_operand_bit, vector<int> signs, int constant_term, bool delete_gate);
 
 
 #endif

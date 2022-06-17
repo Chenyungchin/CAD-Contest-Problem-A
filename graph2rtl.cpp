@@ -130,43 +130,47 @@ bool write_file(string file, string module_name, vector<tuple<string, int>> modu
         
         f << "assign " ;
         // TODO: a gate with many outputs
+        if (g->gate_name == "func") {
+            f << get<0>(g->outputs[0][0])->gate_name.substr(0, 4);
+        }
         // if (g->outputs.size() > 1) f << "{";
-        // int output_count = 0;
-        // for (auto output : g->outputs) {
-            // output_count ++;
-            // if (output_count > 1) f << " , ";
-            // bool in_output_list = false; // Check if there's a fanout is primary output
-            // int primary_output_fanout_idx;
-            // for (int i=0; i<output.size(); i++) {
-                // if (find(output_list.begin(), output_list.end(), get<0>(output[i])->gate_name) != output_list.end()) {
-                    // in_output_list = true;
-                    // primary_output_fanout_idx = i;
-                // }
-                // else {
-                    // get<0>(output[i])->traversal ++;
-                // }
-                // if (get<0>(output[i])->traversal == get<0>(output[i])->num_of_inputs()) {
-                    // gate_queue.push(get<0>(output[i]));
-                // }
-            // }
-            // if (in_output_list) {
-                // f << get<0>(output[primary_output_fanout_idx])->gate_name;
-                // g->out_wire_idx.push_back(get<0>(output[primary_output_fanout_idx])->gate_name);
-                // for (int i=0; i<output.size(); i++) {
-                    // get<0>(output[i])->in_wire_idx.push_back(get<0>(output[primary_output_fanout_idx])->gate_name);
-                // }
-            // }
-            // else {
-                // f << "w" << wire_count;
-                // g->out_wire_idx.push_back(to_string(wire_count));
-                // for (int i=0; i<output.size(); i++) {
-                    // get<0>(output[i])->in_wire_idx.push_back(to_string(wire_count));
-                // }
-                // wire_count ++;
-            // }
-        // }
+        else {
+            int output_count = 0;
+            for (auto output : g->outputs) {
+                output_count ++;
+                if (output_count > 1) f << " , ";
+                bool in_output_list = false; // Check if there's a fanout is primary output
+                int primary_output_fanout_idx;
+                for (int i=0; i<output.size(); i++) {
+                    if (find(output_list.begin(), output_list.end(), get<0>(output[i])->gate_name) != output_list.end()) {
+                        in_output_list = true;
+                        primary_output_fanout_idx = i;
+                    }
+                    else {
+                        get<0>(output[i])->traversal ++;
+                    }
+                    if (get<0>(output[i])->traversal == get<0>(output[i])->num_of_inputs()) {
+                        gate_queue.push(get<0>(output[i]));
+                    }
+                }
+                if (in_output_list) {
+                    f << get<0>(output[primary_output_fanout_idx])->gate_name;
+                    g->out_wire_idx.push_back(get<0>(output[primary_output_fanout_idx])->gate_name);
+                    for (int i=0; i<output.size(); i++) {
+                        get<0>(output[i])->in_wire_idx.push_back(get<0>(output[primary_output_fanout_idx])->gate_name);
+                    }
+                }
+                else {
+                    f << "w" << wire_count;
+                    g->out_wire_idx.push_back(to_string(wire_count));
+                    for (int i=0; i<output.size(); i++) {
+                        get<0>(output[i])->in_wire_idx.push_back(to_string(wire_count));
+                    }
+                    wire_count ++;
+                }
+            }
+        }
         // if (g->outputs.size() > 1) f << "} = ";
-        f << get<0>(g->outputs[0][0])->gate_name.substr(0, 4);
         f << " = ";
         
         int tmp_count = 0;
@@ -198,6 +202,12 @@ bool write_file(string file, string module_name, vector<tuple<string, int>> modu
                     }
                     start = false;
                 }
+            }
+            if (g->constant_term > 0) {
+                f << " + " << g->constant_term;
+            }
+            else if (g->constant_term < 0) {
+                f << " - " << -1 * g->constant_term;
             }
             f << ";" << endl;
         }
