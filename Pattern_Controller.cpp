@@ -13,7 +13,7 @@ vector<int> pattern_generator(vector<int> inputs_operand_bits){
 }
 
 // tuple<vector<bool>, vector<Gate*>, vector<Gate*>> 
-tuple<bool**, vector<int>*, int> pattern_controller(vector<Gate*> primary_inputs, vector<Gate*> primary_outputs, vector<int> inputs_operand_bit, int num_of_pattern){
+tuple<bool**, vector<int>*, int, int> pattern_controller(vector<Gate*> primary_inputs, vector<Gate*> primary_outputs, vector<int> inputs_operand_bit, int num_of_pattern){
     // vector<Gate*> circ_inputs = primary_inputs;
     // vector<Gate*> circ_outputs = primary_outputs;
 
@@ -44,7 +44,7 @@ tuple<bool**, vector<int>*, int> pattern_controller(vector<Gate*> primary_inputs
     }
 
 
-    return make_tuple(bool_table, column_signs, num_of_columns);
+    return make_tuple(bool_table, column_signs, num_of_columns, constant_term);
     
     
     // while (1){

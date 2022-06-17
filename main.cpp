@@ -16,7 +16,11 @@
 int main()
 {
     // string file_path = "full_adder.v";
-    string file_path = "release/test07/top_primitive.v";
+    cout << "which test case?" << endl;
+    string n;
+    cin >> n;
+    // string file_path = "release/test01/top_primitive.v";
+    string file_path = "release/test" + n + "/top_primitive.v";
     
     string file_out_path = "out2.v";
     string module_name;
@@ -163,6 +167,7 @@ int main()
         bool** table = get<0>(test_tuple);
         vector<int>* column_signs = get<1>(test_tuple);
         int num_of_columns = get<2>(test_tuple);
+        int constant_term = get<3>(test_tuple);
 
         // debug
         // if (i == 1){
