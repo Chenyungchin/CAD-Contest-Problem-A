@@ -165,61 +165,58 @@ int main()
     //     cout << endl;
     // }
     bool delete_gate = true;
-    for (int i=0; i<outputs.size(); i++){
-        if (i>0) delete_gate = false;
-        // if (i != 1) continue;
-        cout << "start checking pattern" << endl;
-        auto test_tuple = pattern_controller(inputs, outputs[i], inputs_operand_bit, num_of_pattern);
-        cout << "finish checking pattern" << endl;
-        bool** table = get<0>(test_tuple);
-        vector<int>* column_signs = get<1>(test_tuple);
-        int num_of_columns = get<2>(test_tuple);
-        int constant_term = get<3>(test_tuple);
+    if (module_inputs.size() <= 10){
+        // laugh die
+        for (int i=0; i<outputs.size(); i++){
+            if (i>0) delete_gate = false;
+            // if (i != 1) continue;
+            cout << "start checking pattern" << endl;
+            auto test_tuple = pattern_controller(inputs, outputs[i], inputs_operand_bit, num_of_pattern);
+            cout << "finish checking pattern" << endl;
+            bool** table = get<0>(test_tuple);
+            vector<int>* column_signs = get<1>(test_tuple);
+            int num_of_columns = get<2>(test_tuple);
+            int constant_term = get<3>(test_tuple);
 
-        // debug
-        // if (i == 1){
-        //     cout << num_of_columns << endl;
-        //     for (auto sign: column_signs[126]) cout << sign << " ";
-        //     cout << endl;
-        // }
-
-        vector<int> cover = PQM(table, num_of_columns, num_of_pattern, column_signs);
-        cout << "find ctrl" << endl;
-        vector<int> ctrl = get_ctrl(cover, module_inputs, column_signs);
-        cout << "print operand" << endl;
-        vector<vector<int>> functions;
-        // cout << "cover size: " << cover.size() << endl;
-        for (int j=0; j<cover.size(); j++){
-            vector<int> signs = column_signs[cover[j]];
-            functions.push_back(signs);
             // debug
-            for (int sign: signs){
-                cout << sign << " ";
-            }
-            cout << endl;
-        }
-        int c = ctrl[0];
-        if (cover.size() > 1 && ctrl.size() == 1) {
-            vector<vector<tuple<int, int>>> CTRL = find_ctrl(functions, inputs, outputs[i], inputs_operand_bit, num_of_pattern_ctrl, ctrl);
-            cout << "ctrl found" << endl;
-            int tmp_count = 0;
-            int CTRL_i = 0;
-            for (int k=0; k<cover.size(); k++) {
-                if (tmp_count == CTRL[CTRL_i].size()) {
-                    tmp_count = 0;
-                    CTRL_i ++;
+            // if (i == 1){
+            //     cout << num_of_columns << endl;
+            //     for (auto sign: column_signs[126]) cout << sign << " ";
+            //     cout << endl;
+            // }
+
+            vector<int> cover = PQM(table, num_of_columns, num_of_pattern, column_signs);
+            cout << "find ctrl" << endl;
+            vector<int> ctrl = get_ctrl(cover, module_inputs, column_signs);
+            cout << "print operand" << endl;
+            vector<vector<int>> functions;
+            // cout << "cover size: " << cover.size() << endl;
+            for (int j=0; j<cover.size(); j++){
+                vector<int> signs = column_signs[cover[j]];
+                functions.push_back(signs);
+                // debug
+                for (int sign: signs){
+                    cout << sign << " ";
                 }
-                tuple<int, int> ctrl_value_tuple = CTRL[CTRL_i][tmp_count];
-                graphReduction(inputs, outputs[i], inputs_operand_bit, functions[k], constant_term, delete_gate, c, get<0>(ctrl_value_tuple));
-                cout << "graph reduced!" << endl;
-                delete_gate = false;
-                tmp_count ++;
+                cout << endl;
             }
-        }
-        else if (cover.size() == 1) {
-            graphReduction(inputs, outputs[i], inputs_operand_bit, functions[0], constant_term, delete_gate, -1, -1);
+            int c = ctrl[0];
+            if (cover.size() > 1 && ctrl.size() == 1) {
+                vector<vector<tuple<int, int>>> CTRL = find_ctrl(functions, inputs, outputs[i], inputs_operand_bit, num_of_pattern_ctrl, ctrl);
+                cout << "ctrl found" << endl;
+                for (int k=0; k<cover.size(); k++) {
+                    tuple<int, int> ctrl_value_tuple = CTRL[0][k];
+                    graphReduction(inputs, outputs[i], inputs_operand_bit, functions[k], constant_term, delete_gate, c, get<0>(ctrl_value_tuple));
+                    cout << "graph reduced!" << endl;
+                    delete_gate = false;
+                }
+            }
+            else if (cover.size() == 1) {
+                graphReduction(inputs, outputs[i], inputs_operand_bit, functions[0], constant_term, delete_gate, -1, -1);
+            }
         }
     }
+    
 
     cout << "finish PQM" << endl;
 
