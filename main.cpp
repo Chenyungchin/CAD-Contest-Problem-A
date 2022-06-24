@@ -212,9 +212,9 @@ int main()
 
     bool write_complete = write_file(file_out_path, module_name, module_inputs, module_outputs, primary_inputs);
 
-    // if (write_complete = true) {
-    //     cout << "Write Completed" << endl;
-    // }
+    if (write_complete = true) {
+        cout << "Write Completed" << endl;
+    }
 
     
 
