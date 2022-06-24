@@ -25,6 +25,7 @@ float evaluate(string file, int gate_count)
         "~|",
         ">>",
         "<<",
+        "?"
     };
     int assign_count = 0;
     int cost = 0;
@@ -34,15 +35,15 @@ float evaluate(string file, int gate_count)
         // cout << "str: " << str << endl;
 
         while (ss.good())
-        {
+        {   
             string element;
 
             getline(ss, element, ' ');
-            size_t found = element.find("~w");
+            // size_t found = element.find("~w");
             if (element == "assign")
             {
                 assign_count++;
-                //cout << "find assign!" << endl;
+                // cout << "find assign!" << endl;
                 //cout << "element: " << element << endl;
             }
             else if (find(begin(std_library), end(std_library), element) != end(std_library))
@@ -51,16 +52,19 @@ float evaluate(string file, int gate_count)
             }
             else
             {
-                if (found != string::npos)
-                {
+                // find inverter
+                if (element.find('~') != string::npos){
                     cost++;
+                    // cout << "inverter: " << element << endl;
                 }
             }
 
             //cout << "element: " << element << endl;
         }
     }
-    float reduction_rate = (1 - cost / gate_count);
-    //cout << "cost: " << cost << endl;
+    float reduction_rate = (1 - float(cost) / float(gate_count));
+    // cout << 3 / 5 << endl;
+    cout << "cost: " << cost << endl;
+    cout << "gate count: " << gate_count << endl;
     return reduction_rate;
 }
