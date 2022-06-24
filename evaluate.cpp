@@ -38,12 +38,11 @@ float evaluate(string file, int gate_count)
             string element;
 
             getline(ss, element, ' ');
-            cout << element << endl;
-            size_t found = element.find("~w");
+            // size_t found = element.find("~w");
             if (element == "assign")
             {
                 assign_count++;
-                cout << "find assign!" << endl;
+                // cout << "find assign!" << endl;
                 //cout << "element: " << element << endl;
             }
             else if (find(begin(std_library), end(std_library), element) != end(std_library))
@@ -52,9 +51,10 @@ float evaluate(string file, int gate_count)
             }
             else
             {
-                if (found != string::npos)
-                {
+                // find inverter
+                if (element.find('~') != string::npos){
                     cost++;
+                    // cout << "inverter: " << element << endl;
                 }
             }
 

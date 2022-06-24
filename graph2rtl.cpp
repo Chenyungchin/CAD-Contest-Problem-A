@@ -121,6 +121,7 @@ bool write_file(string file, string module_name, vector<tuple<string, int>> modu
             // g->no = gate_count;
             // gate_count ++;
         // }
+        // cout << g->gate_name;
         string name = g->gate_name;
         vector<pair<string, string>>::iterator op_pair;
         string op;
@@ -181,7 +182,6 @@ bool write_file(string file, string module_name, vector<tuple<string, int>> modu
         }
         // if (g->outputs.size() > 1) f << "} = ";
         f << " = ";
-        
         int tmp_count = 0;
         int input_count = 0;
         if (g->gate_name == "func") {
