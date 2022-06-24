@@ -59,7 +59,7 @@ vector<vector<tuple<int, int>>> find_ctrl(vector<vector<int>> functions, vector<
     for (int c=0; c<ctrl.size(); c++) {
         for (int i=0; i<ctrl_var[c].size(); i++) {
             dao[c].push_back(make_tuple(ctrl_var[c][i], ctrl_func[c][i]));
-            cout << ctrl_var[c][i] << " " << ctrl_func[c][i] << endl;
+            // cout << ctrl_var[c][i] << " " << ctrl_func[c][i] << endl;
         }
     }
 

@@ -202,11 +202,18 @@ int main()
         if (cover.size() > 1 && ctrl.size() == 1) {
             vector<vector<tuple<int, int>>> CTRL = find_ctrl(functions, inputs, outputs[i], inputs_operand_bit, num_of_pattern_ctrl, ctrl);
             cout << "ctrl found" << endl;
+            int tmp_count = 0;
+            int CTRL_i = 0;
             for (int k=0; k<cover.size(); k++) {
-                tuple<int, int> ctrl_value_tuple = CTRL[0][k];
+                if (tmp_count == CTRL[CTRL_i].size()) {
+                    tmp_count = 0;
+                    CTRL_i ++;
+                }
+                tuple<int, int> ctrl_value_tuple = CTRL[CTRL_i][tmp_count];
                 graphReduction(inputs, outputs[i], inputs_operand_bit, functions[k], constant_term, delete_gate, c, get<0>(ctrl_value_tuple));
                 cout << "graph reduced!" << endl;
                 delete_gate = false;
+                tmp_count ++;
             }
         }
         else if (cover.size() == 1) {
