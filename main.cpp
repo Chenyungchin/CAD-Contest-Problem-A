@@ -27,7 +27,7 @@ int main()
     // string file_path = "release/test01/top_primitive.v";
     string file_path = "release/test" + n + "/top_primitive.v";
     
-    string file_out_path = "out.v";
+    string file_out_path = "out2.v";
     string module_name;
     vector<tuple<string, int>> module_inputs;
     vector<tuple<string, int>> module_outputs;
@@ -218,6 +218,7 @@ int main()
     // if (write_complete = true) {
     //     cout << "Write Completed" << endl;
     // }
+    cout << "daodao" << endl;
     float reduction_rate = evaluate(file_out_path, gate_count);
     cout << "reduction rate: " << reduction_rate << endl;
 

@@ -34,15 +34,16 @@ float evaluate(string file, int gate_count)
         // cout << "str: " << str << endl;
 
         while (ss.good())
-        {
+        {   
             string element;
 
             getline(ss, element, ' ');
+            cout << element << endl;
             size_t found = element.find("~w");
             if (element == "assign")
             {
                 assign_count++;
-                //cout << "find assign!" << endl;
+                cout << "find assign!" << endl;
                 //cout << "element: " << element << endl;
             }
             else if (find(begin(std_library), end(std_library), element) != end(std_library))
