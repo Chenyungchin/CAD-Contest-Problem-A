@@ -20,6 +20,10 @@ int main()
     cout << "which test case?" << endl;
     string n;
     cin >> n;
+
+    // runtime simulation
+    clock_t time_req = clock();
+
     // string file_path = "release/test01/top_primitive.v";
     string file_path = "release/test" + n + "/top_primitive.v";
     
@@ -210,6 +214,9 @@ int main()
     // }
     float reduction_rate = evaluate(file_out_path, gate_count);
     cout << "reduction rate: " << reduction_rate << endl;
+
+    time_req = clock() - time_req;
+    cout << "The reduction procedure tooks " << (float)time_req/CLOCKS_PER_SEC << " seconds" << endl;
 
     
 
