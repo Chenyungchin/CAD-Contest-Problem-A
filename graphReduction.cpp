@@ -1,6 +1,6 @@
 #include "graphReduction.h"
 
-void graphReduction(vector<Gate*> circ_inputs, vector<Gate*> circ_outputs, vector<int> inputs_operand_bit, vector<int> signs, int constant_term, bool delete_gate) {
+void graphReduction(vector<Gate*> circ_inputs, vector<Gate*> circ_outputs, vector<int> inputs_operand_bit, vector<int> signs, int constant_term, bool delete_gate, int c, int ctrl_value) {
     
     int input_num = 0;
     for (auto n : inputs_operand_bit) {
@@ -18,6 +18,11 @@ void graphReduction(vector<Gate*> circ_inputs, vector<Gate*> circ_outputs, vecto
     //     cout << sign << " ";
     // }
     // cout << endl;
+    if (c >= 0) {
+        newGate->c = c;
+        newGate->ctrl_value = ctrl_value;
+        // cout << c << " " << ctrl_value << endl;
+    }
 
     newGate->inputs_operand_bit = inputs_operand_bit;
     int in_gate_count = 0;

@@ -14,6 +14,8 @@ public:
     int traversal;
     int value;
     int constant_term;
+    int c; // ctrl input
+    int ctrl_value; // value of ctrl input
     vector<string> transitive_fanin;
     vector<string> in_wire_idx;
     vector<string> out_wire_idx; // Can be a number (of wire) or a output wire name
@@ -25,8 +27,8 @@ public:
         return outputs.size();
     }
 
-    Gate(): inputs(0), outputs(0), gate_name("undefined"), no(-1), traversal(0), value(-1), transitive_fanin(0){};
-    Gate(string s): inputs(0), outputs(0), gate_name(s), no(-1), traversal(0), value(-1), transitive_fanin(0){};
+    Gate(): inputs(0), outputs(0), gate_name("undefined"), no(-1), traversal(0), value(-1),c(-1), ctrl_value(-1), transitive_fanin(0){};
+    Gate(string s): inputs(0), outputs(0), gate_name(s), no(-1), traversal(0), value(-1), c(-1), ctrl_value(-1), transitive_fanin(0){};
 };
 
 class Wire {
