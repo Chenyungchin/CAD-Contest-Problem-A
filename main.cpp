@@ -142,7 +142,7 @@ int main()
     // for (int i=0; i<inputs_operand_bit.size(); i++) cout << inputs_operand_bit[i] << " ";
 
     int num_of_pattern = 10;
-    int num_of_pattern_ctrl = 100;
+    int num_of_pattern_ctrl = 10;
     cout << "dao" << endl;
     // cout << "dao2" << endl;
     
@@ -197,11 +197,17 @@ int main()
             }
             cout << endl;
         }
+        int c = ctrl[0];
         if (cover.size() > 1) {
             vector<vector<tuple<int, int>>> CTRL = find_ctrl(functions, inputs, outputs[i], inputs_operand_bit, num_of_pattern_ctrl, ctrl);
+            for (int j=0; j<cover.size(); j++) {
+                tuple<int, int> ctrl_value_tuple = CTRL[0][j];
+                graphReduction(inputs, outputs[i], inputs_operand_bit, functions[j], constant_term, delete_gate, c, get<0>(ctrl_value_tuple));
+                delete_gate = false;
+            }
         }
         else if (cover.size() == 1) {
-            graphReduction(inputs, outputs[i], inputs_operand_bit, functions[0], constant_term, delete_gate);
+            graphReduction(inputs, outputs[i], inputs_operand_bit, functions[0], constant_term, delete_gate, -1, -1);
         }
     }
 

@@ -14,6 +14,9 @@ vector<vector<tuple<int, int>>> find_ctrl(vector<vector<int>> functions, vector<
     int num_of_function_terms;
 
     vector<vector<int>> ctrl_pattern;
+    for (int c=0; c<ctrl.size(); c++) {
+        ctrl_pattern.push_back({});
+    }
     for (int i=0; i<num_of_pattern; i++){
         vector<int> pattern = pattern_generator(inputs_operand_bit);
         for (int c=0; c<ctrl.size(); c++) {
@@ -34,9 +37,11 @@ vector<vector<tuple<int, int>>> find_ctrl(vector<vector<int>> functions, vector<
     for (int c=0; c<ctrl.size(); c++) {
         dao.push_back({});
         ctrl_var.push_back({});
+        ctrl_func.push_back({});
     }
     for (int i=0; i<functions.size(); i++) {
         for (int j=0; j<num_of_pattern; j++) {
+            // cout << bool_table[j][i] << " ";
             for (int c=0; c<ctrl.size(); c++) {
                 if (bool_table[j][i]) {
                     if (find(ctrl_var[c].begin(), ctrl_var[c].end(), ctrl_pattern[c][j]) == ctrl_var[c].end()) {
@@ -48,11 +53,13 @@ vector<vector<tuple<int, int>>> find_ctrl(vector<vector<int>> functions, vector<
                 } 
             }
         }
+        // cout << endl;
     }
     
     for (int c=0; c<ctrl.size(); c++) {
-        for (int i=0; i<ctrl_var.size(); i++) {
+        for (int i=0; i<ctrl_var[c].size(); i++) {
             dao[c].push_back(make_tuple(ctrl_var[c][i], ctrl_func[c][i]));
+            cout << ctrl_var[c][i] << " " << ctrl_func[c][i] << endl;
         }
     }
 

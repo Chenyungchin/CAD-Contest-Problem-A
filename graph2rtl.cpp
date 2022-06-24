@@ -19,8 +19,8 @@ bool write_file(string file, string module_name, vector<tuple<string, int>> modu
                                             make_pair("nor", "~|"), 
                                             make_pair("xor", "^"), 
                                             make_pair("xnor", "~^"), 
-                                            make_pair("buf", "fuck"), 
-                                            make_pair("++", "fuck2")};
+                                            make_pair("buf", "b"), 
+                                            make_pair("++", "++")};
     vector<string> input_list;
     vector<string> output_list;
     int input_num = 0;
@@ -39,6 +39,8 @@ bool write_file(string file, string module_name, vector<tuple<string, int>> modu
         }
         f << get<0>(input) << ";" << endl;
     }
+    input_list.push_back("1'b0");
+    input_list.push_back("1'b1");
     for (auto output : module_outputs) {
         f << "output wire ";
         if (get<1>(output) == 1) {
@@ -106,7 +108,7 @@ bool write_file(string file, string module_name, vector<tuple<string, int>> modu
         Gate* g = gate_queue.front();
         gate_queue.pop();
 
-        cout << g->gate_name << endl;
+        // cout << g->gate_name << endl;
         // cout << wire_count << endl;
         // cout << g->gate_name;
         // for (int i=0; i<g->num_of_inputs(); i++) {
@@ -115,19 +117,26 @@ bool write_file(string file, string module_name, vector<tuple<string, int>> modu
         // cout << "\n";
 
         // f << g->num_of_inputs() << " " << g->num_of_outputs() <<endl;
-        if (g->traversal == 0) {
+        // if (g->traversal == 0) {
             // g->no = gate_count;
-            gate_count ++;
-        }
+            // gate_count ++;
+        // }
         string name = g->gate_name;
         vector<pair<string, string>>::iterator op_pair;
         string op;
-        if (g->gate_name != "func") {
+        if (g->gate_name != "func" && g->gate_name != "buf") {
             op_pair = find_if(Gate_pair.begin(), Gate_pair.end(), [&name](pair<string, string> p){return p.first == name;});
             op = (*op_pair).second;
         }
+        if (g->gate_name == "buf") {
+            op = "buf_op";
+        }
 
-        
+        if (g->c >= 0) {
+            f << "if (in" << g->c + 1 << " == " << g->ctrl_value << ") ";
+
+        }
+
         f << "assign " ;
         // TODO: a gate with many outputs
         if (g->gate_name == "func") {
@@ -189,9 +198,11 @@ bool write_file(string file, string module_name, vector<tuple<string, int>> modu
             // }
             cout << "output functions" << endl;
             bool start = true;
+            bool all_0 = true;
             for (int i=0; i<func.size(); i++) {
                 // cout << "this is iteration " << i <<", sign is " << g->signs[i] << endl;
                 if (g->signs[i] != 0) {
+                    all_0 = false;
                     if (g->signs[i] == 1 && !start) f << " + ";
                     else if (g->signs[i] == -1) f << " - ";
                     for (int j=0; j<func[i].size(); j++) {
@@ -203,12 +214,16 @@ bool write_file(string file, string module_name, vector<tuple<string, int>> modu
                     start = false;
                 }
             }
-            if (g->constant_term > 0) {
+            if (all_0) {
+                f << g->constant_term;
+            }
+            else if (g->constant_term > 0) {
                 f << " + " << g->constant_term;
             }
             else if (g->constant_term < 0) {
                 f << " - " << -1 * g->constant_term;
             }
+            
             f << ";" << endl;
         }
         else {
@@ -232,6 +247,7 @@ bool write_file(string file, string module_name, vector<tuple<string, int>> modu
                     f << ";" << endl;
                 }
             }
+            // cout << g->gate_name;
         }
     }
     if (wire_count > 0) {
