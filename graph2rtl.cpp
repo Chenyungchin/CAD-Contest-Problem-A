@@ -194,8 +194,11 @@ bool write_file(string file, string module_name, vector<tuple<string, int>> modu
             //     else f << ";" << endl;
             // }
             
-            if (g->c >= 0) {
+            if (g->c >= 0 && ctrl_count <3) {
                 f << "(in" << g->c + 1 << " == " << g->ctrl_value << ") ? ";
+                ctrl_count ++;
+            }
+            else if (g->c >= 0) {
                 ctrl_count ++;
             }
             cout << "output functions" << endl;

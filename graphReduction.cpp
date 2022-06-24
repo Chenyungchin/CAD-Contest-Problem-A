@@ -33,7 +33,7 @@ void graphReduction(vector<Gate*> circ_inputs, vector<Gate*> circ_outputs, vecto
         }
         in_gate_count ++;
     }
-    cout <<"dao " << c << " " << ctrl_value << endl;
+    // cout <<"dao " << c << " " << ctrl_value << endl;
     int out_gate_count = 0;
     for (auto g_out : circ_outputs) {
         newGate->outputs.push_back({make_tuple(g_out, 0)});
