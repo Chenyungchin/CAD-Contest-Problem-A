@@ -27,7 +27,7 @@ int main()
     // string file_path = "release/test01/top_primitive.v";
     string file_path = "release/test" + n + "/top_primitive.v";
     
-    string file_out_path = "out2.v";
+    string file_out_path = "Top.v";
     string module_name;
     vector<tuple<string, int>> module_inputs;
     vector<tuple<string, int>> module_outputs;
@@ -141,7 +141,7 @@ int main()
 
     // for (int i=0; i<inputs_operand_bit.size(); i++) cout << inputs_operand_bit[i] << " ";
 
-    int num_of_pattern = 10;
+    int num_of_pattern = 100;
     int num_of_pattern_ctrl = 10;
     cout << "dao" << endl;
     // cout << "dao2" << endl;
@@ -188,6 +188,7 @@ int main()
         vector<int> ctrl = get_ctrl(cover, module_inputs, column_signs);
         cout << "print operand" << endl;
         vector<vector<int>> functions;
+        // cout << "cover size: " << cover.size() << endl;
         for (int j=0; j<cover.size(); j++){
             vector<int> signs = column_signs[cover[j]];
             functions.push_back(signs);
@@ -198,11 +199,13 @@ int main()
             cout << endl;
         }
         int c = ctrl[0];
-        if (cover.size() > 1) {
+        if (cover.size() > 1 && ctrl.size() == 1) {
             vector<vector<tuple<int, int>>> CTRL = find_ctrl(functions, inputs, outputs[i], inputs_operand_bit, num_of_pattern_ctrl, ctrl);
-            for (int j=0; j<cover.size(); j++) {
-                tuple<int, int> ctrl_value_tuple = CTRL[0][j];
-                graphReduction(inputs, outputs[i], inputs_operand_bit, functions[j], constant_term, delete_gate, c, get<0>(ctrl_value_tuple));
+            cout << "ctrl found" << endl;
+            for (int k=0; k<cover.size(); k++) {
+                tuple<int, int> ctrl_value_tuple = CTRL[0][k];
+                graphReduction(inputs, outputs[i], inputs_operand_bit, functions[k], constant_term, delete_gate, c, get<0>(ctrl_value_tuple));
+                cout << "graph reduced!" << endl;
                 delete_gate = false;
             }
         }

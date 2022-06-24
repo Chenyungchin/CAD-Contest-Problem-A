@@ -25,6 +25,7 @@ float evaluate(string file, int gate_count)
         "~|",
         ">>",
         "<<",
+        "?"
     };
     int assign_count = 0;
     int cost = 0;
@@ -63,6 +64,7 @@ float evaluate(string file, int gate_count)
     }
     float reduction_rate = (1 - float(cost) / float(gate_count));
     // cout << 3 / 5 << endl;
-    //cout << "cost: " << cost << endl;
+    cout << "cost: " << cost << endl;
+    cout << "gate count: " << gate_count << endl;
     return reduction_rate;
 }
