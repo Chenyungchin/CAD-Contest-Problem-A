@@ -23,7 +23,7 @@ int main()
     // string file_path = "release/test01/top_primitive.v";
     string file_path = "release/test" + n + "/top_primitive.v";
     
-    string file_out_path = "out2.v";
+    string file_out_path = "Top.v";
     string module_name;
     vector<tuple<string, int>> module_inputs;
     vector<tuple<string, int>> module_outputs;
