@@ -4,7 +4,7 @@
 b08901061 Yung-Chin, Chen  
 b08901062 Chia-Hsiang, Chang  
 b08901048 Yu-Chen, Chen  
-Department of Eletrical Engineering, National Taiwan University
+Department of Electrical Engineering, National Taiwan University
 
 ## Files
 ```
